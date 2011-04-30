@@ -36,10 +36,14 @@ class RRDServer < Sinatra::Base
   # - rra: if present the range will be clipped wihin it
   #
   get '/rrd/:path/values/:from/:to' do
+    args = {}
+    
+    args[:rra] = params[:rra].to_i if params[:rra]
+    args[:maxrows] = params[:maxrows].to_i if params[:maxrows]
+    args[:ds_name] = params[:ds_name] if params[:ds_name]
+    
     rrd = load_rrd( "#{params[:path]}.rrd" )
-    ret = rrd.get_values("AVERAGE", params[:from].to_i, params[:to].to_i, {
-      :rra => params[:rra].to_i
-    })
+    ret = rrd.xport_values("AVERAGE", params[:from].to_i, params[:to].to_i, args)
     ret.to_json
   end
   

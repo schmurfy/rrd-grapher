@@ -1,8 +1,10 @@
+- content_for(:css) do
+  %link{:rel => 'stylesheet', :href => '/stylesheets/available_rrds.css', :type => 'text/css'}
+
 - content_for(:headers) do
   %script{:type => "text/javascript", :src => "/javascripts/available_rrds.js"}
   %script{:type => "text/javascript", :src => "/javascripts/jquery.showtime.js"}
   %script{:type => "text/javascript", :src => "/javascripts/jquery.human_date.js"}
-  %link{:rel => 'stylesheet', :href => '/stylesheets/available_rrds.css', :type => 'text/css'}
 
 %div#template.hidden
   %div.rrd

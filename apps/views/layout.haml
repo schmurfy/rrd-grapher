@@ -6,16 +6,20 @@
     %link{:rel => "icon", :type => "image/gif", :href => "/favicon.gif"}
     %link{:rel => 'stylesheet', :href => '/stylesheets/Aristo/theme.css', :type => 'text/css'}
     %link{:rel => 'stylesheet', :href => '/stylesheets/app.css', :type => 'text/css'}
+    = yield_content :css
+    
     %script{:type => "text/javascript", :src => "/javascripts/jquery-1.5.1.min.js"}
     %script{:type => "text/javascript", :src => "/javascripts/jquery-ui-1.8.11.min.js"}
     %script{:type => "text/javascript", :src => "/javascripts/jquery.tpl.min.js"}
-    %script{:type => "text/javascript", :src => "/javascripts/flot/jquery.flot.min.js"}
+    %script{:type => "text/javascript", :src => "/javascripts/flot/jquery.flot.js"}
     %script{:type => "text/javascript", :src => "/javascripts/flot/jquery.flot.selection.min.js"}
+    %script{:type => "text/javascript", :src => "/javascripts/app.js"}
+    %script{:type => "text/javascript", :src => "/javascripts/classes/format.js"}
+    %script{:type => "text/javascript", :src => "/javascripts/classes/graph.js"}
     = yield_content :headers
 
   %body
     %div#wrapper
-      %div#button Reload
       %div#content
         = yield
 

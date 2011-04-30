@@ -14,16 +14,21 @@ class RRDGrapher < Sinatra::Base
     haml :available_rrds
   end
   
+  get '/graph' do
+    haml :graph
+  end
+  
   
   # css
-  get '/stylesheets/app.css' do
-    content_type :css
-    scss :'stylesheets/app'
+  
+  def self.dynamic_css(path)
+    get "/stylesheets/#{path}.css" do
+      content_type :css
+      scss "stylesheets/#{path}".to_sym
+    end
   end
   
-  get '/stylesheets/available_rrds.css' do
-    content_type :css
-    scss :'stylesheets/available_rrds'
-  end
-  
+  dynamic_css('app')
+  dynamic_css('available_rrds')
+  dynamic_css('graph')
 end

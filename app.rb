@@ -3,6 +3,7 @@ require 'bundler/setup'
 require 'rack'
 require 'sinatra'
 require 'json'
+require 'sass'
 
 # use Rack::Lint
 
