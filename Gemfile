@@ -4,8 +4,7 @@ gem 'sinatra'
 gem 'sinatra-content-for'
 gem 'thin'
 gem 'haml'
-# gem 'chronic_duration'
-
+gem 'sass'
 
 group(:rrd) do
   gem 'rrd-ffi', :git => 'git://github.com/schmurfy/rrd-ffi.git'

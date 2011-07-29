@@ -1,10 +1,12 @@
 require 'rest-client'
+require 'sinatra/base'
 require 'sinatra/content_for'
+require 'coffe-script'
 
 class RRDGrapher < Sinatra::Base
   helpers Sinatra::ContentFor
   
-  __DIR__ = File.dirname(__FILE__)
+  __DIR__ = File.join( File.dirname(__FILE__), '..')
   
   # set :markdown, :layout_engine => :haml, :layout => :post
   set :public, __DIR__ + '/public'
@@ -19,6 +21,10 @@ class RRDGrapher < Sinatra::Base
   end
   
   
+  get '/collectd' do
+    haml :collectd
+  end
+  
   # css
   
   def self.dynamic_css(path)
@@ -31,4 +37,7 @@ class RRDGrapher < Sinatra::Base
   dynamic_css('app')
   dynamic_css('available_rrds')
   dynamic_css('graph')
+  
+  
+  # coffee-script js
 end

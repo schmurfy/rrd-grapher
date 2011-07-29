@@ -91,16 +91,22 @@ module RRDReader
         @path = @short_name = path
       end
       
-      raise Sinatra::NotFound unless ::File.exists?(@path)
+      unless ::File.exists?(@path)
+        puts "RRD Not found: '#{@path}'"
+        raise Sinatra::NotFound
+      end
       parse_data(@path)
     end
   
     def to_json(*args)
       ret = {
+        :path => @path,
         :short_name => ::File.basename(@short_name, '.rrd'),
         :step => @step,
+        :sources => self.ds.keys,
         :last_update => @last_update.iso8601
       }
+      
       
       ret.to_json(*args)
     end

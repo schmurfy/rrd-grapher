@@ -6,19 +6,21 @@
   %script{:type => "text/javascript", :src => "/javascripts/jquery.showtime.js"}
   %script{:type => "text/javascript", :src => "/javascripts/jquery.human_date.js"}
 
-%div#template.hidden
-  %div.rrd
-    %div.name Name: ${short_name}
-    %div.last_update
-      Last update
-      %span.timestamp{:title => "${last_update}"}
-        ${last_update}
-    %div.step Step: ${step}
-  
+%table#template.hidden
+  %tr
+    %td ${short_name}
+    %td ${path}
+    %td ${sources}
+    %td ${last_update}
+    %td ${step}
 
-%div#time
-  345
+%table#data_list
+  %tr
+    %th Name
+    %th Path
+    %th DS
+    %th Last update
+    %th Step
 
-#target
 
-Hello !!
+/ #target
