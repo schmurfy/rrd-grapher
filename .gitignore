@@ -1,3 +1,5 @@
 gems/
 coverage/
 .bundle/
+public/javascripts/generated/*.js
+spec/javascripts/*.js

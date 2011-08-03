@@ -1,7 +1,6 @@
 require 'rest-client'
 require 'sinatra/base'
 require 'sinatra/content_for'
-require 'coffe-script'
 
 class RRDGrapher < Sinatra::Base
   helpers Sinatra::ContentFor
@@ -38,6 +37,4 @@ class RRDGrapher < Sinatra::Base
   dynamic_css('available_rrds')
   dynamic_css('graph')
   
-  
-  # coffee-script js
 end
