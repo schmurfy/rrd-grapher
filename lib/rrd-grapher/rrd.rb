@@ -187,12 +187,12 @@ module RRDReader
     # PRINT:min:MAX:%.2lf \
     # PRINT:max:MAX:%.2lf
     
-    def get_minmax(from = nil, to = nil)
-      args = []
-      args += ["--start", from.to_i.to_s] if from
-      args += ["--end", to.to_i.to_s] if to
-      
-    end
+    # def get_minmax(from = nil, to = nil)
+    #   args = []
+    #   args += ["--start", from.to_i.to_s] if from
+    #   args += ["--end", to.to_i.to_s] if to
+    #   
+    # end
 
   private
     def parse_data(path)

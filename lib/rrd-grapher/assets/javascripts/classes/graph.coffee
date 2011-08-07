@@ -121,17 +121,20 @@ class window.Graph extends Backbone.Model
     
     if first
       @set "plot" : $.plot(@get("container"), data_array, @get("flot_options"))
-      $(@get("container")).bind("plothover", (event, pos, item) => @show_tooltip(event, pos, item))
-
-      $(@get("container")).bind "plotselected", (event, ranges) =>
-        @set_interval(
-            Time.client_to_server(ranges.xaxis.from),
-            Time.client_to_server(ranges.xaxis.to)
-          )
+      container = @get("container")
+      container.bind("plothover", (event, pos, item) => @show_tooltip(event, pos, item))
+      container.bind "plotselected", (event, ranges) =>
+        from = Time.client_to_server(ranges.xaxis.from)
+        to = Time.client_to_server(ranges.xaxis.to)
+        @set_interval(from, to)
+        
+        @trigger("plotselection", from, to)
         
         @update_graph()
         @get("plot").clearSelection()
-
+      
+      container.dblclick =>
+        @trigger "dblclick"
         
     else
       plot = @get("plot")
@@ -144,8 +147,8 @@ class window.Graph extends Backbone.Model
     for i in [0...@get("series").length]
       @get("series")[i].color = options.colors[i]
     
-    if first
-      @create_legend(0)
+    # if first
+    @create_legend(0)
       # @create_legend(1)
   
   multiple_get: (urls, when_done_cb) ->
@@ -163,18 +166,28 @@ class window.Graph extends Backbone.Model
         left -= 1
         when_done_cb(ret) if left == 0
   
-  min: (s) ->
-    ret = s.data[0][1]
+  avg: (s) ->
+    ret = 0
+    count = 0
+    
     $.each s.data, (i, pair) ->
-      if pair[1] < ret
+      ret += pair[1]
+      count++
+    
+    ret / count
+  
+  min: (s) ->
+    ret = null
+    $.each s.data, (i, pair) ->
+      if pair[1] && !isNaN(pair[1]) && (!ret || (pair[1] < ret))
         ret = pair[1]
     
     ret
   
   max: (s) ->
-    ret = s.data[0][1]
+    ret = null
     $.each s.data, (i, pair) ->
-      if pair[1] > ret
+      if pair[1] && !isNaN(pair[1]) && (!ret || (pair[1] > ret))
         ret = pair[1]
     
     ret
@@ -219,7 +232,7 @@ class window.Graph extends Backbone.Model
     fragments = []
     rowStarted = false
 
-    fragments.push("<tr><th></th><th>label</th><th>Min</th><th>Max</th></tr>")
+    fragments.push("<tr><th></th><th>label</th><th>Avg</th><th>Min</th><th>Max</th></tr>")
     
     for i in [0...series.length]
       s = series[i]
@@ -238,6 +251,7 @@ class window.Graph extends Backbone.Model
           '<td data-serie="' + i + '" class="legendColorBox"><div class="outerBorder"><div style="width:4px;height:0;border:5px solid ' + s.color + ';overflow:hidden"></div></div></td>')
       
       fragments.push('<td class="legendLabel">' + label + '</td>')
+      fragments.push("<td>#{s.format( @avg(s) )}</td>")
       fragments.push("<td>#{s.format( @min(s) )}</td>")
       fragments.push("<td>#{s.format( @max(s) )}</td>")
     

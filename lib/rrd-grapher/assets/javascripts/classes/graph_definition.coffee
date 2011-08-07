@@ -1,32 +1,75 @@
 
+class window.GraphController extends Backbone.View
+  initialize: ->
+    @pages = @options.pages
+    
+
 # a page group multiple graph definitions
 class window.GraphPage
-  constructor: (@container, @host) ->
+  constructor: (@container, @panel_container, @host) ->
     @graphs = []
+    @autorefresh_timer = null
+    
+    @autorefresh_checkbox = $("#autorefresh", @panel_container)
+    @linked_zoom_checkbox = $("#linkedzoom", @panel_container)
+    
+    # 10s
+    @offset = 60 * 1000
   
   addGraph: (class_name, args...) ->
     g = new window[class_name](@container, @host, args...)
     g.init()
+    g.bind "dblclick", =>
+      @set_simple_interval( @interval )
+      # disable autorefresh
+      @set_autorefresh(null)
+      
+    g.bind "plotselection", (from, to) =>
+      @set_autorefresh(null)
+      if @linked_zoom_checkbox.attr("checked")
+        @set_interval(from, to)
+      
     @graphs.push( g )
   
-  refresh: (interval, time = null) ->
-    to = Math.floor((new Date().getTime() / 1000) - 10)
-    from = to - interval
-
-    $.each @graphs, (i, g) -> g.set_interval(from, to)
+  set_simple_interval: (interval) ->
+    @interval = interval
     
+    # getTime return a timestamp in UTC so ne
+    # conversion is required
+    to = (new Date().getTime()) - @offset
+    to = to / 1000
+    from = to - interval
+    
+    @set_interval(from, to)
+  
+  set_interval: (from, to) ->
+    $.each @graphs, (i, g) ->
+      g.set_interval(from, to)
+      g.update_graph()
+  
+  # set time to null to disable
+  set_autorefresh: (time) ->
+    # start by killing the timer if any
+    if @autorefresh_timer
+      window.clearInterval( @autorefresh_timer )
+      @autorefresh_timer = null
+    
+    # and create a new one if asked
     if time
-      @refresh(interval)
-      me = this
-      int = interval
-      window.setTimeout( (-> me.refresh(int, time)), time)
+      @autorefresh_checkbox.attr("checked", true)
+      @autorefresh_timer = window.setInterval ( => @set_simple_interval(@interval) ), time
     else
-      $.each @graphs, (i, g) -> g.update_graph()
+      @autorefresh_checkbox.attr("checked", false)
+  
+  refresh: ->
+      @set_simple_interval(@interval)
 
   
 # define a graph with its series
 class window.GraphDefinition
   constructor: (@host, @container, @title, formatters, ymin) ->
+    _.extend(this, Backbone.Events);
+    
     if ymin
       # create an array with the same size as the formatters
       limits = $.map formatters, -> [[0, ymin]]
@@ -39,6 +82,9 @@ class window.GraphDefinition
       "parent_container"  : @container
       "formatters"        : formatters
       "limits"            : limits
+    
+    @graph.bind "dblclick", => @trigger("dblclick")
+    @graph.bind "plotselection", (from, to) => @trigger("plotselection", from, to)
     
   init: ->
     @graph.create()
