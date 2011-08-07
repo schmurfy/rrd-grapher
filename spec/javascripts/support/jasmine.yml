@@ -12,7 +12,9 @@
 #
 src_files:
     - lib/rrd-grapher/public/javascripts/jquery/jquery-1.6.2.js
-    - lib/rrd-grapher/public/javascripts/flot/jquery.flot.min.js
+    - lib/rrd-grapher/public/javascripts/flot/jquery.flot.js
+    - lib/rrd-grapher/public/javascripts/backbone/underscore.js
+    - lib/rrd-grapher/public/javascripts/backbone/backbone.js
     - lib/rrd-grapher/public/javascripts/generated/app.js
     - lib/rrd-grapher/public/javascripts/generated/classes/**/*.js
 

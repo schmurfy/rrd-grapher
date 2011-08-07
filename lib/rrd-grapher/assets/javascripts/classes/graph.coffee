@@ -1,76 +1,89 @@
 
-class window.Graph
+class window.Graph extends Backbone.Model
   colors = ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"]
   next_color = 0
   
-  constructor: (title, parent_container, formatters, limits) ->
-    @formatters = formatters || [Format.identity, Format.identity]
-    @limits = limits || [[null, null], [null, null]]
+  defaults:
+    "formatters"  : [Format.identity, Format.identity]
+    "limits"      : [[null, null], [null, null]]
   
-    @maxrows = 400;
-  
-    @legend_containers = [];
-  
+  initialize: ->
+    # super
+    #   "formatters"  : formatters
+    #   "limits"      : limits
+    
+    @set "maxrows" : 400
+    @set "legend_containers" : []
+    
+    parent_container = @get("parent_container")
+    title = @get("title")
+    
+    @set("limits" : @defaults["limits"]) if @get("limits") == null
+    
     # create graph container
-    @master_container = $("<div>").addClass("graph_container").appendTo(parent_container)
-    @graph_title = $("<div>").addClass("graph_title").appendTo(@master_container)
-    @legend_containers[0] = $("<div>").addClass('legend').appendTo(@master_container)
-    $("<h3>").text("Legend").appendTo(@legend_containers[0])
-    $("<div>").text("Legend").appendTo(@legend_containers[0])
-    @container = $("<div>").addClass("graph").appendTo(@master_container)
+    master_container = $("<div>").addClass("graph_container").appendTo(parent_container)
+    @set "master_container" : master_container
+    
+    # @set "graph_title"      : $("<div>").addClass("graph_title").appendTo(master_container)
+    # @get("graph_title").text(title)
+    
+    @get("legend_containers")[0] = $("<div>").addClass('legend').appendTo(master_container)
+    $("<h3>").text(title).appendTo(@get("legend_containers")[0])
+    $("<div>").appendTo(@get("legend_containers")[0])
+    
+    @set "container" : $("<div>").addClass("graph").appendTo(master_container)
     # @legend_containers[1] = $("<div>").addClass('legend').appendTo(this.master_container)
     
-    @graph_title.text(title)
-    
-    @series = []
-    @lines = []
-    @tooltip_point = null
+    @set "series"         : []
+    @set "lines"          : []
+    @set "tooltip_point"  : null
   
     # compute end date (now - 20s)
-    @to = Math.floor((new Date().getTime() / 1000) - 20);
-    @from = @to - 30;
+    to = Math.floor((new Date().getTime() / 1000) - 20)
+    @set "to"   : to 
+    @set "from" : to - 30
   
-    @plot = null;
-    @flot_options =
-      legend: { show : false }
-      selection: { mode: 'x' }
-      grid: { hoverable: true }
-      xaxis: { mode: "time", show: true }
-      yaxes: [
+    @set "plot" : null
+    @set "flot_options" :
+      "legend"    : { show : false }
+      "selection" : { mode: 'x' }
+      "grid"      : { hoverable: true }
+      "xaxis"     : { mode: "time", show: true }
+      "yaxes"     : [
           {
-            min: @limits[0][0],
-            max: @limits[0][1],
-            tickFormatter: @formatters[0],
-            labelWidth: 100
+            "min"           : @get("limits")[0][0]
+            "max"           : @get("limits")[0][1]
+            "tickFormatter" : @get("formatters")[0]
+            "labelWidth"    : 100
           },
           {
-            min: @limits[1][0],
-            max: @limits[1][1],
-            position: "right",
-            labelWidth: 100,
-            reserveSpace: true,
-            tickFormatter: @formatters[1]
+            "min"           : @get("limits")[1][0]
+            "max"           : @get("limits")[1][1]
+            "position"      : "right"
+            "labelWidth"    : 100
+            "reserveSpace"  : true
+            "tickFormatter" : @get("formatters")[1]
           }
         ]
   
   addSerie: (rrd_path, ds_name, legend, yaxis, formatter) ->
     yaxis = yaxis || 1
-    formatter = formatter || @formatters[yaxis - 1]
+    formatter = formatter || @get("formatters")[yaxis - 1]
     
     s = new Serie(rrd_path, ds_name, legend, yaxis, formatter)
     s.color = colors[next_color++]
-    @series.push(s)
+    @get("series").push(s)
   
   addLine: (yvalue, color) ->
     l = new StaticLine(yvalue, color)
-    @lines.push(l)
+    @get("lines").push(l)
   
   create: () ->
-    @update_graph(true)
+    this.update_graph(true)
     this
   
   _build_query: (s) ->
-    query = "/rrd/#{s.rrd_path}/values/#{@from}/#{@to}?maxrows=#{@maxrows}&ds_name=#{s.ds_name}"
+    query = "/rrd/#{s.rrd_path}/values/#{@get('from')}/#{@get('to')}?maxrows=#{@get('maxrows')}&ds_name=#{s.ds_name}"
     if s.rra
       query += "&rra=#{s.rra}"
     
@@ -80,7 +93,7 @@ class window.Graph
     first = first || false
     urls = []
     
-    urls = $(@series).select( (s) ->  s.enabled ).map (i, s) =>
+    urls = $(@get("series")).select( (s) ->  s.enabled ).map (i, s) =>
       [[@_build_query(s), s]]
     
     @multiple_get urls, (data_array) =>
@@ -90,45 +103,46 @@ class window.Graph
   update_graph_from_cache: () ->
     data_array = []
     
-    $.each @series, (i, s) ->
+    $.each @get("series"), (i, s) ->
       if s.enabled
         data_array.push( s.get_definition() )
     
     @_update_graph_common(false, data_array)
   
   set_interval: (from, to) ->
-    @from = from
-    @to = to
+    @set "from" : from
+    @set "to"   : to
   
   _update_graph_common: (first, data_array) ->
     
     # add static data
-    $.each @lines, (i, line) ->
-      data_array.push( line.get_definition(@from, @to) )
+    $.each @get("lines"), (i, line) ->
+      data_array.push( line.get_definition(@get("from"), @get("to")) )
     
     if first
-      @plot = $.plot(@container, data_array, @flot_options)
-      $(@container).bind("plothover", (event, pos, item) => @show_tooltip(event, pos, item))
+      @set "plot" : $.plot(@get("container"), data_array, @get("flot_options"))
+      $(@get("container")).bind("plothover", (event, pos, item) => @show_tooltip(event, pos, item))
 
-      $(@container).bind "plotselected", (event, ranges) =>
+      $(@get("container")).bind "plotselected", (event, ranges) =>
         @set_interval(
             Time.client_to_server(ranges.xaxis.from),
             Time.client_to_server(ranges.xaxis.to)
           )
         
         @update_graph()
-        @plot.clearSelection()
+        @get("plot").clearSelection()
 
         
     else
-      @plot.setData( data_array )
-      @plot.setupGrid()
-      @plot.draw()
+      plot = @get("plot")
+      plot.setData( data_array )
+      plot.setupGrid()
+      plot.draw()
     
-    options = @plot.getOptions()
+    options = @get("plot").getOptions()
     
-    for i in [0...@series.length]
-      @series[i].color = options.colors[i]
+    for i in [0...@get("series").length]
+      @get("series")[i].color = options.colors[i]
     
     if first
       @create_legend(0)
@@ -168,10 +182,10 @@ class window.Graph
   show_tooltip: (event, pos, item) ->
     if item
       id = "" + item.seriesIndex + ":" + item.dataIndex
-      if @tooltip_point != id
-        @tooltip_point = id
+      if @get("tooltip_point") != id
+        @set "tooltip_point" : id
         # var s = @series[item.seriesIndex];
-        s = $(@series).filter((i, s) -> s.legend == item.series.label ).first()
+        s = $(@get("series")).filter((i, s) -> s.legend == item.series.label ).first()
         
         if s.length > 0
           s = s[0]
@@ -195,12 +209,12 @@ class window.Graph
           
     else
       $("#tooltip").remove()
-      @tooltip_point = null
+      @set "tooltip_point" : null
 
   create_legend: (index) ->
     # placeholder.find(".legend").remove();
     # series_data = @plot.getData();
-    series = @series
+    series = @get("series")
 
     fragments = []
     rowStarted = false
@@ -233,13 +247,13 @@ class window.Graph
     return if fragments.length == 0
 
     table = '<table style="font-size:smaller;color:#545454">' + fragments.join("") + '</table>'
-    @legend_containers[index].find("div").html(table)
+    @get("legend_containers")[index].find("div").html(table)
     
     # $(@legend_containers[index]).find(".legendColorBox").click () ->
-    @legend_containers[index].find(".legendColorBox").click (event) =>
+    @get("legend_containers")[index].find(".legendColorBox").click (event) =>
       target = event.currentTarget
       id = $(target).attr("data-serie")
-      s = @series[id]
+      s = @get("series")[id]
       
       s.toggle_enabled()
       s.set_legend_color(target)

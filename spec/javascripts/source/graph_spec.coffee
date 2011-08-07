@@ -11,16 +11,16 @@ describe "Graph", ->
     expect(@container).toContain("div.graph")
   
   it "should allow adding serie", ->
-    expect(@graph.series.length).toEqual(0)
+    expect(@graph.get("series").length).toEqual(0)
     create_spy = spyOn(window, "Serie")
     @graph.addSerie("path/to/file.rrd", "my_ds", "legend_text", 1, null)
-    expect(@graph.series.length).toEqual(1)
+    expect(@graph.get("series").length).toEqual(1)
     # expect(create_spy).toHaveBeenCalledWith(["path/to/file.rrd", "my_ds", "legend_text", 1w, jasmine.any(Function)])
   
   it "should allow addingd static lines", ->
-    expect(@graph.lines.length).toEqual(0)
+    expect(@graph.get("lines").length).toEqual(0)
     @graph.addLine(13, "red")
-    expect(@graph.lines.length).toEqual(1)
+    expect(@graph.get("lines").length).toEqual(1)
   
   it "should update its view when created", ->
     update_spy = spyOn(@graph, "update_graph")

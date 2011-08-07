@@ -34,7 +34,11 @@ class window.GraphDefinition
     else
       limits = null
     
-    @graph = new Graph(@title, @container, formatters, limits)
+    @graph = new Graph
+      "title"             : @title
+      "parent_container"  : @container
+      "formatters"        : formatters
+      "limits"            : limits
     
   init: ->
     @graph.create()

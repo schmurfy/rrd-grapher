@@ -5,9 +5,10 @@ describe "NetworkGraph", ->
     @def = new NetworkGraph(container, "test.com", "en0")
   
   it "should initialize correctly", ->
-    expect(@def.graph.series.length).toEqual(2)
-    expect(@def.graph.series[0].rrd_path).toEqual("test.com/interface/if_octets-en0")
-    expect(@def.graph.series[1].rrd_path).toEqual("test.com/interface/if_octets-en0")
+    series = @def.graph.get("series")
+    expect(series.length).toEqual(2)
+    expect(series[0].rrd_path).toEqual("test.com/interface/if_octets-en0")
+    expect(series[1].rrd_path).toEqual("test.com/interface/if_octets-en0")
 
 describe "GraphPage", ->
   beforeEach ->

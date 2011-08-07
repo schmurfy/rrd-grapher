@@ -48,11 +48,12 @@ GEM
       guard (>= 0.2.2)
       sprockets
     i18n (0.6.0)
-    jasmine (1.0.2.1)
-      json_pure (>= 1.4.3)
+    jasmine (1.1.0.rc3)
+      jasmine-core (>= 1.1.0.rc2)
       rack (>= 1.1)
       rspec (>= 1.3.1)
       selenium-webdriver (>= 0.1.3)
+    jasmine-core (1.1.0.rc3)
     json (1.5.3)
     json_pure (1.5.3)
     libv8 (3.3.10.2)
@@ -103,7 +104,7 @@ DEPENDENCIES
   guard-coffeescript (~> 0.3.2)
   guard-livereload (~> 0.2.1)
   guard-sprockets (~> 0.1.4)
-  jasmine (~> 1.0.2.1)
+  jasmine (~> 1.1.0.rc3)
   mocha (~> 0.9.12)
   rake
   rb-fsevent

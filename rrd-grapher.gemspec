@@ -26,7 +26,8 @@ Gem::Specification.new do |s|
   s.add_dependency("i18n")
   
   
-  s.add_development_dependency("jasmine",             "~> 1.0.2.1")
+  # s.add_development_dependency("jasmine",             "~> 1.0.2.1")
+  s.add_development_dependency("jasmine",             "~> 1.1.0.rc3")
   s.add_development_dependency("bacon",               "~> 1.1.0")
   s.add_development_dependency("mocha",               "~> 0.9.12")
   s.add_development_dependency("simplecov",           "~> 0.4.2")
