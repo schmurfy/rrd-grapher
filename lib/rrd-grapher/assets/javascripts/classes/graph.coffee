@@ -263,8 +263,16 @@ class window.Graph extends Backbone.Model
     table = '<table style="font-size:smaller;color:#545454">' + fragments.join("") + '</table>'
     @get("legend_containers")[index].find("div").html(table)
     
+    legend_lines = $(".legendColorBox", @get("legend_containers")[index])
+    
+    
+    $.each legend_lines, (i, el) =>
+      id = $(el).attr("data-serie")
+      s = @get("series")[id]
+      s.set_legend_color( el )
+    
     # $(@legend_containers[index]).find(".legendColorBox").click () ->
-    @get("legend_containers")[index].find(".legendColorBox").click (event) =>
+    legend_lines.click (event) =>
       target = event.currentTarget
       id = $(target).attr("data-serie")
       s = @get("series")[id]
@@ -273,4 +281,3 @@ class window.Graph extends Backbone.Model
       s.set_legend_color(target)
       @update_graph_from_cache()
     
-    # @legend_containers[index].wijexpander({expandDirection: "right"})

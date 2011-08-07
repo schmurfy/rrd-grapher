@@ -55,8 +55,8 @@ module RRDGrapher
     
       path, from, to = params[:captures]
     
-      # puts "from: #{Time.at(from.to_i)}"
-      # puts "to: #{Time.at(to.to_i)}"
+      puts "from: #{Time.at(from.to_i)}"
+      puts "to: #{Time.at(to.to_i)}"
     
       args[:rra] = params[:rra].to_i if params[:rra]
       args[:maxrows] = params[:maxrows].to_i if params[:maxrows]

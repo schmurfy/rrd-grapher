@@ -12,6 +12,7 @@ class window.GraphPage
     
     @autorefresh_checkbox = $("#autorefresh", @panel_container)
     @linked_zoom_checkbox = $("#linkedzoom", @panel_container)
+    @date_select          = $("#dateselect", @panel_container)
     
     # 10s
     @offset = 60 * 1000
@@ -33,6 +34,9 @@ class window.GraphPage
   
   set_simple_interval: (interval) ->
     @interval = interval
+    
+    # clear the date select
+    @date_select.val("")
     
     # getTime return a timestamp in UTC so ne
     # conversion is required

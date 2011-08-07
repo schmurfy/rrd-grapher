@@ -26,6 +26,13 @@
     panel_container = $("#config_panel");
     page = new CollectdPage(container, panel_container, "pomme.local");
     page.set_simple_interval(30);
+    $("#dateselect").datepicker().change(function() {
+      var date_string, time;
+      date_string = $(this).val();
+      time = Date.parse(date_string) / 1000;
+      page.set_autorefresh(null);
+      return page.set_interval(time, time + 24 * 60 * 60);
+    });
     $("#rangeselect").chosen().change(function() {
       page.set_autorefresh(null);
       return page.set_simple_interval($(this).val());

@@ -38,6 +38,10 @@ It will also package all the js files with sprockets in one file.
 
     $ guard (will take one console)
 
+You can also force a full rebuild of everything with (coffeescript + sprockets):
+
+    $ rake build
+
 Last thing you will certainly need is to start a webserver, any should do but
 I currently use unicorn
 
