@@ -3,3 +3,4 @@ coverage/
 .bundle/
 public/javascripts/generated/*.js
 spec/javascripts/*.js
+.sass-cache/

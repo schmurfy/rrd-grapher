@@ -1,0 +1,9 @@
+
+gem 'rrd-grapher', :path => File.expand_path('../..', __FILE__)
+gem 'sinatra'
+gem 'sinatra-content-for'
+gem 'haml'
+
+group(:dev) do
+  gem 'guard-coffeescript'
+end

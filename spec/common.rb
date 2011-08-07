@@ -7,7 +7,7 @@ puts "Working path: #{Dir.pwd}"
 require 'bundler/setup'
 require 'bacon'
 require 'mocha'
-require 'factory_girl'
+# require 'factory_girl'
 require 'simplecov'
 
 

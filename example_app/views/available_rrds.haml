@@ -1,0 +1,26 @@
+- content_for(:css) do
+  %link{:rel => 'stylesheet', :href => '/stylesheets/available_rrds.css', :type => 'text/css'}
+
+- content_for(:headers) do
+  %script{:type => "text/javascript", :src => "/javascripts/available_rrds.js"}
+  %script{:type => "text/javascript", :src => "/javascripts/jquery/jquery.showtime.js"}
+  %script{:type => "text/javascript", :src => "/javascripts/jquery.timeago.js"}
+
+%table#template.hidden
+  %tr
+    %td ${short_name}
+    %td ${path}
+    %td ${sources}
+    %td.time{:title => "${last_update}"} ${last_update}
+    %td ${step}
+
+%table#data_list
+  %tr
+    %th Name
+    %th Path
+    %th DS
+    %th Last update
+    %th Step
+
+
+/ #target

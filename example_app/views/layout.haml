@@ -1,0 +1,33 @@
+!!! 
+%html
+  %head
+    %title RRD Grapher
+    %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=UTF-8"}
+    %link{:rel => "icon", :type => "image/gif", :href => "/favicon.gif"}
+    %link{:rel => 'stylesheet', :href => '/stylesheets/Aristo/theme.css', :type => 'text/css'}
+    %link{:rel => 'stylesheet', :href => '/stylesheets/app.css', :type => 'text/css'}
+    %link{:rel => 'stylesheet', :href => '/javascripts/wijmo-open/css/jquery.wijmo-open.1.3.0.css', :type => 'text/css'}
+    = yield_content :css
+    
+    / %script{:type => "text/javascript", :src => "/javascripts/jquery/jquery-1.6.2.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/jquery/jquery-ui-1.8.11.min.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/jquery/jquery.tpl.min.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/wijmo-open/js/jquery.wijmo-open.1.3.0.min.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/flot/jquery.flot.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/flot/jquery.flot.selection.min.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/generated/app.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/generated/classes/format.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/generated/classes/time.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/generated/classes/size.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/generated/classes/static_line.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/generated/classes/serie.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/generated/classes/graph.js"}
+    / %script{:type => "text/javascript", :src => "/javascripts/generated/classes/graph_definition.js"}
+    %script{:type => "text/javascript", :src => "/javascripts/app.js"}
+    = yield_content :headers
+
+  %body
+    %div#wrapper
+      %div#content
+        = yield
+

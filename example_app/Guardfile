@@ -1,0 +1,18 @@
+
+guard 'coffeescript',
+  :input => 'assets/javascripts',
+  :output => 'public/javascripts'
+
+# guard 'coffeescript',
+#   :input => 'spec/javascripts/source',
+#   :output => 'spec/javascripts'
+
+
+
+# guard 'livereload', :apply_js_live => false do
+#   watch(%r{^spec/javascripts/.+\.js$})
+#   watch(%r{^public/javascripts/.+\.js$})
+#   watch(%r{^views/stylesheets/.+\.scss$})
+#   watch(%r{^views/.+\.haml$})
+# end
+

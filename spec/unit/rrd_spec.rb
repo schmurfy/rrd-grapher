@@ -1,6 +1,6 @@
 require File.expand_path('../../common', __FILE__)
 
-require File.join(ROOT, 'lib/rrd')
+require File.join(ROOT, 'lib/rrd-grapher/rrd')
 
 describe 'RRD Reader' do
   

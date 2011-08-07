@@ -1,0 +1,26 @@
+- content_for(:css) do
+  %link{:rel => 'stylesheet', :href => '/chosen/chosen.css', :type => 'text/css'}
+  %link{:rel => 'stylesheet', :href => '/stylesheets/graph.css', :type => 'text/css'}
+  
+- content_for(:headers) do
+  %script{:type => "text/javascript", :src => "/chosen/chosen.jquery.js"}
+  %script{:type => "text/javascript", :src => "/javascripts/collectd.js"}
+
+  
+#config_panel{:class => "row"}
+  .column.grid_4
+    .row
+      %input.checkbox#autorefresh{:type => "checkbox"} Auto Refresh
+    .row
+      %input.checkbox#linkedzoom{:type => "checkbox"} Linked Zoom
+  
+  .column.grid_4
+    Interval:
+    %select#rangeselect
+      %option{:value => 30, :selected => true} 30 seconds
+      %option{:value => 60} 1 minute
+      %option{:value => 60*60} 1 hour
+      %option{:value => 60*60*24} 1 day
+  
+
+#graphs

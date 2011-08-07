@@ -26,10 +26,3 @@ describe "Serie", ->
     expect(@serie.enabled).toEqual(false)
     @serie.set_enabled(true)
     expect(@serie.enabled).toEqual(true)
-  
-  # data timestamp are in seconds and in GMT timezone
-  it "should convert timestamp on incoming data", ->
-    data = {1: 23, 3: 45}
-    @serie.set_data(data)
-    offset = tz_offset * 60
-    expect(@serie.get_data()).toEqual([[1000 * ( 1 + offset ), 23], [1000 * (3 + offset), 45]])
