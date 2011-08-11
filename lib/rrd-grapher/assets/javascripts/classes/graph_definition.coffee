@@ -114,6 +114,7 @@ class window.MemoryGraph extends GraphDefinition
     super(host, container, "Memory", [ Format.size, Format.size ], ymin)
 
     @graph.addSerie("#{@host}/memory/memory-active",    "value", "Active")
+    @graph.addSerie("#{@host}/memory/memory-cache",     "value", "Cached")
     @graph.addSerie("#{@host}/memory/memory-free",      "value", "Free")
     @graph.addSerie("#{@host}/memory/memory-inactive",  "value", "Inactive")
     @graph.addSerie("#{@host}/memory/memory-wired",     "value", "Wired")
