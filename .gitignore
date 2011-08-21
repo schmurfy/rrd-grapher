@@ -4,3 +4,4 @@ coverage/
 public/javascripts/generated/*.js
 spec/javascripts/*.js
 .sass-cache/
+Gemfile.lock
