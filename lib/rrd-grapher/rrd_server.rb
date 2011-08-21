@@ -10,6 +10,9 @@ module RRDGrapher
     def initialize(app, opts = {})
       @app = app
       @root_path = opts.delete(:root_path)
+      # use rrdcached ?
+      # value must be the path to the unix socket
+      @rrdcached = opts.delete(:rrdcached)
       
       unless opts.empty?
         raise "Unknown options: #{opts.inspect}"
@@ -55,12 +58,10 @@ module RRDGrapher
     
       path, from, to = params[:captures]
     
-      puts "from: #{Time.at(from.to_i)}"
-      puts "to: #{Time.at(to.to_i)}"
-    
       args[:rra] = params[:rra].to_i if params[:rra]
       args[:maxrows] = params[:maxrows].to_i if params[:maxrows]
       args[:ds_name] = params[:ds_name] if params[:ds_name]
+      args[:rrdcached] = @rrdcached
     
       rrd = load_rrd( "#{path}.rrd" )
       ret = rrd.xport_values("AVERAGE", from.to_i, to.to_i, args)

@@ -161,6 +161,10 @@ module RRDReader
         args += ['--step', interval.to_s]
       end
       
+      if opts[:rrdcached]
+        args += ['--daemon', opts[:rrdcached]]
+      end
+      
       if opts[:ds_name]
         ds_name = opts[:ds_name]
       else
