@@ -33,7 +33,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency("bacon",               "~> 1.1.0")
   s.add_development_dependency("mocha",               "~> 0.9.12")
   s.add_development_dependency("factory_girl",        "~> 2.0.4")
-  s.add_development_dependency("delorean",            "~> 1.1.0")
   s.add_development_dependency("simplecov",           "~> 0.4.2")
   s.add_development_dependency("coffee-script",       "~> 2.2.0")
   s.add_development_dependency("therubyracer",        "~> 0.9.2")
