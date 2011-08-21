@@ -25,11 +25,15 @@ Gem::Specification.new do |s|
   s.add_dependency("rest-client", "~> 1.6.3")
   s.add_dependency("i18n")
   
+  s.add_dependency("bindata",     "~> 1.4.2")
+  
   
   # s.add_development_dependency("jasmine",             "~> 1.0.2.1")
   s.add_development_dependency("jasmine",             "~> 1.1.0.rc3")
   s.add_development_dependency("bacon",               "~> 1.1.0")
   s.add_development_dependency("mocha",               "~> 0.9.12")
+  s.add_development_dependency("factory_girl",        "~> 2.0.4")
+  s.add_development_dependency("delorean",            "~> 1.1.0")
   s.add_development_dependency("simplecov",           "~> 0.4.2")
   s.add_development_dependency("coffee-script",       "~> 2.2.0")
   s.add_development_dependency("therubyracer",        "~> 0.9.2")

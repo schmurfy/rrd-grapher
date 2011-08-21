@@ -8,20 +8,21 @@ window.Format =
   
   delay: (num) ->
     if num < 1000
-      "" + num + "&nbsp;ms"
+      Format._convert(num, null, ["ms"])
     else
       Format._convert(num/1000, 60, ["s", "m", "h"])
   
   
   identity: (num) ->
-    num
+    Format._convert(num)
   
-  _convert: (num, ref, units) ->
+  _convert: (num, ref = null, units = [""]) ->
     index = 0
 
-    while num > ref
-      num /= ref
-      index+= 1
+    if ref
+      while num > ref
+        num /= ref
+        index+= 1
 
     "" +  parseFloat(num).toFixed(2) + "&nbsp;" + units[index]
 

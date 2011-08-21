@@ -7,19 +7,22 @@ puts "Working path: #{Dir.pwd}"
 require 'bundler/setup'
 require 'bacon'
 require 'mocha'
-# require 'factory_girl'
-require 'simplecov'
+require 'factory_girl'
 
 
-# require File.join(File.dirname(__FILE__), 'factories.rb')
+require File.expand_path('../factories', __FILE__)
 
 ROOT = File.expand_path('../../', __FILE__)
 
-SimpleCov.start do
-  add_filter '/gems/'
-  add_filter '/specs/'
+if (RUBY_VERSION >= "1.9") && ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/gems/'
+    add_filter '/spec/'
+    add_filter 'default_user_handler.rb'
   
-  root(ROOT)
+    root(ROOT)
+  end
 end
 
 
@@ -56,16 +59,11 @@ module Bacon
   end
 end
 
-
-def focus(test_label)
-  silence_warnings do
-    Bacon.const_set(:RestrictName, %r{#{test_label}})
-  end
-end
-
-def focus_context(test_label)
-  silence_warnings do
-    Bacon.const_set(:RestrictContext, %r{#{test_label}})
+unless ENV['COVERAGE']
+  def focus(test_label)
+    # silence_warnings do
+      Bacon.const_set(:RestrictName, %r{#{test_label}})
+    # end
   end
 end
 

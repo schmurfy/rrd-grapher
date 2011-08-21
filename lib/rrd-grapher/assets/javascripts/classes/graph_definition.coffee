@@ -14,7 +14,7 @@ class window.GraphPage
     @linked_zoom_checkbox = $("#linkedzoom", @panel_container)
     @date_select          = $("#dateselect", @panel_container)
     
-    # 10s
+    # 60s
     @offset = 60 * 1000
   
   addGraph: (class_name, args...) ->
@@ -76,8 +76,14 @@ class window.GraphDefinition
     
     if ymin
       # create an array with the same size as the formatters
-      limits = $.map formatters, -> [[0, ymin]]
-      # limits = [ [0, ymin], [0, ymin] ]
+      ymin = $.makeArray(ymin)
+      if ymin.length == 1
+        limits = $.map formatters, -> [[0, ymin[0]]]
+      else if ymin.length == 2
+        limits = $.map ymin, (val)-> [[0, val]]
+        
+      
+        
     else
       limits = null
     
@@ -100,13 +106,44 @@ class window.GraphDefinition
     @graph.update_graph()
 
 
+
+class window.NTPGraph extends GraphDefinition
+  constructor: (container, host, @remote_host, ymin = null) ->
+    super(host, container, "NTP", [ Format.delay, Format.identity ], ymin)
+    
+    # @remote_host2 = @remote_host.replace(/\./g, '-')
+    @graph.addSerie("#{@host}/ntpd/time_offset-#{@remote_host}", "seconds", "Offset remote")
+    @graph.addSerie("#{@host}/ntpd/time_offset-loop", "seconds", "Offset local")
+    
+    @graph.addSerie("#{@host}/ntpd/delay-#{@remote_host}", "seconds", "Delay remote")
+    
+    @graph.addSerie("#{@host}/ntpd/time_dispersion-#{@remote_host}", "seconds", "Dispertion remote")
+    @graph.addSerie("#{@host}/ntpd/time_dispersion-LOCAL", "seconds", "Dispertion local")
+
+
+class window.CPUGraph extends GraphDefinition
+  constructor: (container, host, @cpu_index, ymin = null) ->
+    super(host, container, "CPU #{@cpu_index}", [ Format.identity, Format.identity ], ymin)
+    @graph.addSerie("#{@host}/cpu-#{@cpu_index}/cpu-user",      'value', 'User')
+    @graph.addSerie("#{@host}/cpu-#{@cpu_index}/cpu-system",    'value', 'System')
+    @graph.addSerie("#{@host}/cpu-#{@cpu_index}/cpu-interrupt", 'value', 'Interrupt')
+
+
+class window.PingGraph extends GraphDefinition
+  constructor: (container, host, @label, @destination, ymin = null) ->
+    super(host, container, "Ping #{@label}", [ Format.delay, Format.identity ], ymin)
+    
+    @graph.addSerie("#{@host}/ping/ping-#{@destination}", 'ping', 'Latency')
+    @graph.addSerie("#{@host}/ping/ping_stddev-#{@destination}", 'value', 'stddev')
+    @graph.addSerie("#{@host}/ping/ping_droprate-#{@destination}", 'value', 'Loss', 2)
+    
+
 class window.NetworkGraph extends GraphDefinition
   constructor: (container, host, @interface, ymin = null) ->
     super(host, container, "Network Traffic (#{interface})", [ Format.size, Format.size ], ymin)
 
     @graph.addSerie("#{@host}/interface/if_octets-#{@interface}", "rx", "(#{@interface}) Bytes Received")
     @graph.addSerie("#{@host}/interface/if_octets-#{@interface}", "tx", "(#{@interface}) Bytes Sent")
-    @graph.create()
 
 
 class window.MemoryGraph extends GraphDefinition

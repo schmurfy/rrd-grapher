@@ -39,9 +39,9 @@ class window.Graph extends Backbone.Model
     @set "tooltip_point"  : null
   
     # compute end date (now - 20s)
-    to = Math.floor((new Date().getTime() / 1000) - 20)
+    to = Math.floor((new Date().getTime() / 1000) - 60)
     @set "to"   : to 
-    @set "from" : to - 30
+    @set "from" : to - 15*60
   
     @set "plot" : null
     @set "flot_options" :
