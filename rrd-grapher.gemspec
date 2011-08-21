@@ -40,6 +40,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency("guard-coffeescript",  "~> 0.3.2")
   s.add_development_dependency("guard-livereload",    "~> 0.2.1")
   s.add_development_dependency("guard-sprockets",     "~> 0.1.4")
+  s.add_development_dependency("guard-yard",          "~> 1.0.0")
+  s.add_development_dependency("rdiscount",           "~> 1.6.8")
   s.add_development_dependency("rb-fsevent")
   s.add_development_dependency("growl")
   s.add_development_dependency("rake")

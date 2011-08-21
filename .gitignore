@@ -1,7 +1,9 @@
 gems/
+doc/
 coverage/
 .bundle/
 public/javascripts/generated/*.js
 spec/javascripts/*.js
 .sass-cache/
+.yardoc/
 Gemfile.lock

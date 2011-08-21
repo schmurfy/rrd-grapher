@@ -3,6 +3,12 @@
 
 require 'sprockets'
 
+guard 'yard' do
+  watch(%r{lib/.+\.rb})
+end
+
+
+# for the grapher
 guard 'coffeescript',
   :input => 'lib/rrd-grapher/assets/javascripts',
   :output => 'lib/rrd-grapher/public/javascripts/generated'
