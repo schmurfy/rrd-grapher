@@ -26,6 +26,11 @@ task :build do
   pack_js("app.js")
 end
 
+task :test do
+  system("COVERAGE=1 bundle exec bacon spec/**/*_spec.rb")
+end
+
+
 
 begin
   require 'jasmine'
