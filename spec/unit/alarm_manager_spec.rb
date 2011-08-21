@@ -203,50 +203,47 @@ describe 'AlarmManager' do
     end
     
     should 'raise an alarm if value is missing for more than the threshold' do
-      EM::run do
-        p = Factory(:data_point, :plugin => "memory", :type => "memory", :type_instance => "active", :values => [8])
-    
-        @manager.expects(:raise_alarm).with(p.measure_id, kind_of(RRDNotifier::AlarmMissingData) )
-        @manager.packet_received(p)
-        
-        EM::add_timer(0.7){ EM::stop() }
-      end
+      p = Factory(:data_point, :plugin => "memory", :type => "memory", :type_instance => "active", :values => [8])
       
+      # force the timer to be called
+      EM::expects(:add_timer).with(@interval).yields()
+      
+      @manager.expects(:raise_alarm).with(p.measure_id, kind_of(RRDNotifier::AlarmMissingData) )
+      @manager.packet_received(p)
     end
     
     should 'not raise an alarm is value missing for less than the threshold' do
-      EM::run do
-        p = Factory(:data_point, :plugin => "memory", :type => "memory", :type_instance => "active", :values => [8])
-    
-        @manager.expects(:raise_alarm).never
-        @manager.packet_received(p)
-        
-        EM::add_timer(0.2){ EM::stop() }
-      end
+      p = Factory(:data_point, :plugin => "memory", :type => "memory", :type_instance => "active", :values => [8])
+      
+      # catch the timer creation but do not execute its callback
+      EM::expects(:add_timer).with(@interval)
+      
+      @manager.expects(:raise_alarm).never
+      @manager.packet_received(p)
     end
     
     should 'stop the alarm when a value is received' do
-      EM::run do
-        p_alarm = Factory(:data_point, :plugin => "memory", :type => "memory", :type_instance => "active", :values => [8])
-        p_normal = Factory(:data_point, :plugin => "memory", :type => "memory", :type_instance => "active", :values => [8])
-                
-        @manager.expects(:raise_alarm).with(p_alarm.measure_id, kind_of(RRDNotifier::AlarmMissingData) )
-        @manager.packet_received(p_alarm)
-        
-        EM::add_timer(0.7) do
-          alarm_time = Time.now - 20
-          
-          @manager.expects(:last_update_for).with(p_alarm.measure_id).returns(alarm_time)
-          @manager.expects(:active_alarms_for).with(p_alarm.measure_id).returns( [RRDNotifier::AlarmMissingData.new(p_alarm, @interval, alarm_time)] )
+      p_alarm = Factory(:data_point, :plugin => "memory", :type => "memory", :type_instance => "active", :values => [8])
+      p_normal = Factory(:data_point, :plugin => "memory", :type => "memory", :type_instance => "active", :values => [8])
       
-          @manager.expects(:raise_alarm).never
-          @manager.expects(:stop_specific_alarm).with( p_normal.measure_id, kind_of(RRDNotifier::AlarmMissingData) )
-        
-          EM::add_timer(0.1){ EM::stop() }
-        
-          @manager.packet_received(p_normal)
-        end
-      end
+      alarm_time = Time.now - 60
+      @manager.stubs(:last_update_for).with(p_alarm.measure_id).returns(alarm_time)
+      
+      
+      # catch the timer creation and execute the calback to raise an alarm
+      timer_id = stub()
+      EM::expects(:add_timer).with(@interval).yields.returns(timer_id).once
+      @manager.expects(:raise_alarm).with(p_alarm.measure_id, kind_of(RRDNotifier::AlarmMissingData) )
+      @manager.packet_received(p_alarm)
+      
+      
+      EM::expects(:cancel_timer).with(timer_id)
+      EM::expects(:add_timer).with(@interval)
+      @manager.expects(:active_alarms_for).with(p_alarm.measure_id).returns( [RRDNotifier::AlarmMissingData.new(p_alarm, @interval, alarm_time)] )
+      @manager.expects(:stop_specific_alarm).with( p_normal.measure_id, kind_of(RRDNotifier::AlarmMissingData) )
+      @manager.expects(:raise_alarm).never
+          
+      @manager.packet_received(p_normal)
     end
     
   end
