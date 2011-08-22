@@ -1,4 +1,6 @@
 
+require 'fiber_pool'
+
 require File.expand_path('../structures', __FILE__)
 require File.expand_path('../alarms', __FILE__)
 require File.expand_path('../alarm_trigger', __FILE__)
@@ -11,12 +13,15 @@ module RRDNotifier
   # 
   class AlarmManager
     
+    attr_reader :fiber_pool
+    
     ##
     # Create a new AlertManager object
     # 
     # @param [Hash] opts options
     # @option opts [Module,Object] notification_manager The object
     #   used when a new notification is triggered/stopped
+    # @option opts [FiberPool] fiber_pool Fiber pool to use.
     # 
     def initialize(opts = {})
       @notification_handler = opts.delete(:notification_handler) || DefaultNotificationHandler
@@ -25,6 +30,7 @@ module RRDNotifier
         raise "notification_handler #{@notification_handler} invalid, some callbacks are missing !"
       end
       
+      @fiber_pool = opts.delete(:fiber_pool) || FiberPool.new(10)
       @triggers = []
       @active_alarms = {}
       @last_updates = {}
@@ -57,11 +63,13 @@ module RRDNotifier
     # @param [CollectdParser::Notification, CollectdParser::DataPoint] p packet received
     # 
     def packet_received(p)
-      if p.is_a?(DataPoint)
-        trigger_notifications(p)
-        @last_updates[p.measure_id] = Time.now
-      else
-        @notification_handler.dispatch_notification(p)
+      @fiber_pool.spawn do
+        if p.is_a?(DataPoint)
+          trigger_notifications(p)
+          @last_updates[p.measure_id] = Time.now
+        else
+          @notification_handler.dispatch_notification(p)
+        end
       end
     end
     

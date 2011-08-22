@@ -168,8 +168,10 @@ module RRDNotifier
     # @param [DataPoint] p the data point
     # 
     def presence_timeout(p)
-      last_update = @manager.last_update_for(p.measure_id)
-      @manager.raise_alarm( p.measure_id, AlarmMissingData.new(p, @monitor_presence, last_update) )
+      @manager.fiber_pool.spawn do
+        last_update = @manager.last_update_for(p.measure_id)
+        @manager.raise_alarm( p.measure_id, AlarmMissingData.new(p, @monitor_presence, last_update) )
+      end
     end
   
   end

@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency("rest-client",   "~> 1.6.3")
   s.add_dependency("i18n")
   s.add_dependency("eventmachine",  "~> 0.12.10")
+  s.add_dependency("fiber_pool",    "~> 1.0.0")
   
   s.add_dependency("bindata",       "~> 1.4.2")
   
