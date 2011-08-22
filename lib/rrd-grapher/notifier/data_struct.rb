@@ -16,9 +16,8 @@ class DataStruct
   # 
   def merge_data_from(opts_or_obj = {}, only_fields = nil, allow_nil = false)
     self.class.attributes.select{|attr_name| selected_field?(attr_name, only_fields) }.each do |attr_name|
-      v = opts_or_obj.is_a?(Hash) ? opts_or_obj[attr_name] : opts_or_obj.send(attr_name)
+      v = opts_or_obj.is_a?(Hash) ? (opts_or_obj[attr_name.to_s] || opts_or_obj[attr_name]) : opts_or_obj.send(attr_name)
       if allow_nil || !v.nil?
-        # puts "#{attr_name} => #{v}"
         send("#{attr_name}=", v)
       end
     end
