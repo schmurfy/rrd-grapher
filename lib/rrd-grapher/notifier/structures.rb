@@ -50,11 +50,26 @@ module RRDNotifier
         values[index]
       end
       
+      def plugin_display
+        if plugin_instance
+          "#{plugin}/#{plugin_instance}"
+        else
+          plugin
+        end
+      end
+
+      def type_display
+        if type_instance
+          "#{type}/#{type_instance}"
+        else
+          type
+        end
+      end
       ##
       # return a unique id for the measured data.
       # 
       def measure_id
-        "#{host}-#{plugin}/#{plugin_instance}-#{type}/#{type_instance}"
+        "#{host}-#{plugin_display}-#{type_display}"
       end
       
   end

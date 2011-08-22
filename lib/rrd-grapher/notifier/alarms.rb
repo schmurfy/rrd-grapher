@@ -11,6 +11,11 @@ module RRDNotifier
       @packet = p
     end
     
+    def method_missing(m, *args)
+      if packet
+        packet.send(m, *args)
+      end
+    end
     
     def plugin_display
       if packet.plugin_instance
