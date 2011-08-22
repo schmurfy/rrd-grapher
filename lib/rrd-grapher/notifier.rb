@@ -8,8 +8,8 @@ module RRDNotifier
   
   class Server < EM::Connection
     
-    def initialize(alert_manager, on_init_block = nil)
-      @alert_manager = alert_manager
+    def initialize(alarm_manager, on_init_block = nil)
+      @alarm_manager = alarm_manager
       @on_init_block = on_init_block
     end
     
@@ -26,13 +26,13 @@ module RRDNotifier
       host = opts.delete(:host) || '127.0.0.1'
       port = opts.delete(:port) || 10000
       
-      alert_manager = AlarmManager.new(opts)
+      alarm_manager = AlarmManager.new(opts)
       
       unless opts.empty?
         raise "Unknown arguments: #{opts}"
     
       end
-      EM::open_datagram_socket(host, port, Server, alert_manager, block)
+      EM::open_datagram_socket(host, port, Server, alarm_manager, block)
     end
     
     
@@ -41,7 +41,7 @@ module RRDNotifier
     # @see AlertManager::register_alert
     # 
     def register_alarm(*args)
-      @alert_manager.register_alarm(*args)
+      @alarm_manager.register_alarm(*args)
     end
     
     
@@ -59,7 +59,7 @@ module RRDNotifier
     def receive_data(data)
       if packets = CollectdParser::parse(data)
         packets.each do |p|
-          @alert_manager.packet_received(p)
+          @alarm_manager.packet_received(p)
         end
       end
     end
