@@ -65,7 +65,7 @@ module RRDGrapher
     
       rrd = load_rrd( "#{path}.rrd" )
       ret = rrd.xport_values("AVERAGE", from.to_i, to.to_i, args)
-      # p ret
+      
       ret.to_json
     end
   
