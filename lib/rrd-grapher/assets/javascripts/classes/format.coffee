@@ -1,10 +1,13 @@
 
 window.Format =
   speed: (num) ->
-    Format._convert(num, 1024, ["", "KB/s", "MB/s", "GB/s"])
+    Format._convert(num, 1024, ["B/s", "KB/s", "MB/s", "GB/s"])
   
   size: (num) ->
-    Format._convert(num, 1024, ["", "KB", "MB", "GB"])
+    Format._convert(num, 1024, ["B", "KB", "MB", "GB"])
+  
+  percent: (num) ->
+    Format._convert(num, null, ["%"])
   
   delay: (num) ->
     if num < 1000
