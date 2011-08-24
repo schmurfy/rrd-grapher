@@ -79,6 +79,11 @@ module RRDNotifier
       (@type_instance.nil? || (@type_instance == p.type_instance))
     end
   
+
+    def inspect
+      "#{@host}-#{@plugin}/#{@plugin_instance}-#{@type}/#{@type_instance}"
+    end
+
     ##
     # Called by the manager when a packet is received.
     # 
