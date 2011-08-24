@@ -51,7 +51,7 @@ module RRDNotifier
       end
       
       def plugin_display
-        if plugin_instance
+        if plugin_instance && !plugin_instance.empty?
           "#{plugin}/#{plugin_instance}"
         else
           plugin
@@ -59,7 +59,7 @@ module RRDNotifier
       end
 
       def type_display
-        if type_instance
+        if type_instance &&  !type_instance.empty?
           "#{type}/#{type_instance}"
         else
           type
