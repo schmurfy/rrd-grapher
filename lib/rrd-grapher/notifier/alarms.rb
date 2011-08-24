@@ -16,22 +16,6 @@ module RRDNotifier
         packet.send(m, *args)
       end
     end
-    
-    def plugin_display
-      if packet.plugin_instance
-        "#{packet.plugin}/#{packet.plugin_instance}"
-      else
-        packet.plugin
-      end
-    end
-    
-    def type_display
-      if packet.type_instance
-        "#{packet.type}/#{packet.type_instance}"
-      else
-        packet.type
-      end
-    end
   end
   
   class AlarmTooHigh < Alarm
