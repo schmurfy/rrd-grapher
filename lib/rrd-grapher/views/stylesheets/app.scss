@@ -91,6 +91,10 @@ DIV.graph_container {
         border-bottom: 2px solid black;
       }
       
+      TD {
+        text-align: right;
+      }
+      
       .legendColorBox .outerBorder {
         padding: 1px;
         border: 1px solid #aaa;
@@ -100,7 +104,6 @@ DIV.graph_container {
       
       TH, TD {
         padding: 1px 8px;
-/*        text-align: center;*/
       }
       
     }
