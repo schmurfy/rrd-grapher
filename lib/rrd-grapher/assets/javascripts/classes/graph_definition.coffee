@@ -123,11 +123,17 @@ class window.NTPGraph extends GraphDefinition
 
 class window.CPUGraph extends GraphDefinition
   constructor: (container, host, @cpu_index, ymin = null) ->
-    super(host, container, "CPU #{@cpu_index}", [ Format.identity, Format.identity ], ymin)
+    super(host, container, "CPU #{@cpu_index}", [ Format.percent, Format.prcent ], ymin)
     @graph.addSerie("#{@host}/cpu-#{@cpu_index}/cpu-user",      'value', 'User')
     @graph.addSerie("#{@host}/cpu-#{@cpu_index}/cpu-system",    'value', 'System')
     @graph.addSerie("#{@host}/cpu-#{@cpu_index}/cpu-interrupt", 'value', 'Interrupt')
 
+
+class window.DFGraph extends GraphDefinition
+  constructor: (container, host, @location, ymin = null) ->
+    super(host, container, "Disk use (#{@location})", [ Format.size, Format.size ], ymin)
+    @graph.addSerie("#{@host}/df/df-#{@location}",  'used', 'Used')
+    @graph.addSerie("#{@host}/df/df-#{@location}",  'free', 'Free')
 
 class window.PingGraph extends GraphDefinition
   constructor: (container, host, @label, @destination, ymin = null) ->
@@ -147,19 +153,25 @@ class window.NetworkGraph extends GraphDefinition
 
 
 class window.MemoryGraph extends GraphDefinition
-  constructor: (container, host, ymin = null) ->
+  constructor: (container, host, os, ymin = null) ->
     super(host, container, "Memory", [ Format.size, Format.size ], ymin)
-
-    @graph.addSerie("#{@host}/memory/memory-active",    "value", "Active")
-    @graph.addSerie("#{@host}/memory/memory-cache",     "value", "Cached")
-    @graph.addSerie("#{@host}/memory/memory-free",      "value", "Free")
-    @graph.addSerie("#{@host}/memory/memory-inactive",  "value", "Inactive")
-    @graph.addSerie("#{@host}/memory/memory-wired",     "value", "Wired")
+    
+    if os == "freebsd"
+      @graph.addSerie("#{@host}/memory/memory-active",    "value", "Active")
+      @graph.addSerie("#{@host}/memory/memory-cache",     "value", "Cached")
+      @graph.addSerie("#{@host}/memory/memory-free",      "value", "Free")
+      @graph.addSerie("#{@host}/memory/memory-inactive",  "value", "Inactive")
+      @graph.addSerie("#{@host}/memory/memory-wired",     "value", "Wired")
+    else if os == "linux"
+      @graph.addSerie("#{@host}/memory/memory-buffered",  "value", "Buffered")
+      @graph.addSerie("#{@host}/memory/memory-cached",    "value", "Caached")
+      @graph.addSerie("#{@host}/memory/memory-free",      "value", "Free")
+      @graph.addSerie("#{@host}/memory/memory-used",      "value", "Used")
 
 
 class window.LoadGraph extends GraphDefinition
   constructor: (container, host, ymin = null) ->
-    super(host, container, "CPU Load", [ Format.size, Format.size ], ymin)
+    super(host, container, "CPU Load", [ Format.identity, Format.identity ], ymin)
 
     @graph.addSerie("#{@host}/load/load",    "shortterm", "Load (1min)")
     @graph.addSerie("#{@host}/load/load",    "midterm", "Load (5min)")
