@@ -68,7 +68,7 @@ module RRDNotifier
     # Checks if this packet is interesting for the
     # trigger.
     # 
-    # @param [DataPoint] p the packet
+    # @param [Packet] p the packet
     # @return [Boolean] true if the packet is interesting
     # 
     def match?(p)
@@ -87,7 +87,7 @@ module RRDNotifier
     ##
     # Called by the manager when a packet is received.
     # 
-    # @param [DataPoint] p the packet
+    # @param [Packet] p the packet
     # 
     def check_alarms(p)
       # if the packet is not intersting for me, stop here
@@ -170,7 +170,7 @@ module RRDNotifier
     ##
     # Raise a presence alarm.
     # 
-    # @param [DataPoint] p the data point
+    # @param [Packet] p the data point
     # 
     def presence_timeout(p)
       @manager.fiber_pool.spawn do

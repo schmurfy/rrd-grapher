@@ -1,7 +1,7 @@
 
 require 'eventmachine'
 
-require File.expand_path('../notifier/collectd_parser', __FILE__)
+require File.expand_path('../notifier/parsers/bindata_parser', __FILE__)
 require File.expand_path('../notifier/alarm_manager', __FILE__)
 
 module RRDNotifier
@@ -57,7 +57,7 @@ module RRDNotifier
     # @param [String] data data received
     # 
     def receive_data(data)
-      if packets = CollectdParser::parse(data)
+      if packets = BindataParser::parse(data)
         packets.each do |p|
           @alarm_manager.packet_received(p)
         end

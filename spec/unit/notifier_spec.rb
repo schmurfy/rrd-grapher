@@ -37,7 +37,7 @@ describe 'Notifier::Server' do
       @alarm_manager.expects(:packet_received).with(packets[1])
       @alarm_manager.expects(:packet_received).with(packets[2])
       
-      RRDNotifier::CollectdParser::expects(:parse).with(data).returns(packets)
+      RRDNotifier::BindataParser::expects(:parse).with(data).returns(packets)
       @notifier.receive_data(data)
     end
   end

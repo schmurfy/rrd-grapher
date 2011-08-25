@@ -5,6 +5,7 @@ module RRDNotifier
   # from collectd source code
   # plugin.h
   # 
+  ### notification:
   # int severity;
   # cdtime_t time;
   # char message[NOTIF_MAX_MSG_LEN];
@@ -14,18 +15,7 @@ module RRDNotifier
   # char type[DATA_MAX_NAME_LEN];
   # char type_instance[DATA_MAX_NAME_LEN];
   # 
-  class Notification < DataStruct
-      properties :severity,
-        :time,
-        :message,
-        :host,
-        :plugin,
-        :plugin_instance,
-        :type,
-        :type_instance
-  end
-  
-  
+  ### data
   # value_t *values;
   # int values_len;
   # cdtime_t time;
@@ -36,16 +26,30 @@ module RRDNotifier
   # char type[DATA_MAX_NAME_LEN];
   # char type_instance[DATA_MAX_NAME_LEN];
   # 
-  class DataPoint < DataStruct
-      properties :values,
-        :time,
-        :interval,
+  class Packet < DataStruct
+      properties :time,
         :host,
         :plugin,
         :plugin_instance,
         :type,
-        :type_instance
-    
+        :type_instance,
+        
+        # data
+        :interval,
+        :values,
+        
+        # notification
+        :message,
+        :severity
+      
+      def notification?
+        !self.message.nil?
+      end
+      
+      def data?
+        self.message.nil?
+      end
+      
       def value(index = 0)
         values[index]
       end

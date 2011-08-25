@@ -60,11 +60,11 @@ module RRDNotifier
     # Called by the Notifier when an event is successfully extracted
     # from a collectd packet.
     # 
-    # @param [CollectdParser::Notification, CollectdParser::DataPoint] p packet received
+    # @param [Packet] p packet received
     # 
     def packet_received(p)
       @fiber_pool.spawn do
-        if p.is_a?(DataPoint)
+        if p.data?
           trigger_notifications(p)
           @last_updates[p.measure_id] = Time.now
         else
@@ -78,7 +78,7 @@ module RRDNotifier
     # Called all the triggers matching this packet
     # to see if one or more wants to start/stop alarms.
     # 
-    # @param [CollectdParser::DataPoint] p the packet
+    # @param [Packet] p the packet
     # 
     def trigger_notifications(p)
       @triggers.each{|t| t.check_alarms(p) }

@@ -1,10 +1,10 @@
 
 require 'bindata'
 
-require File.expand_path('../structures', __FILE__)
+require File.expand_path('../../structures', __FILE__)
 
 module RRDNotifier
-  module CollectdParser
+  module BindataParser
   
     # part type
     HOST            = 0x0000
@@ -72,7 +72,7 @@ module RRDNotifier
       
       int64       :integer_value, :onlyif => proc{ INT_FIELDS.include?(part_type) }
       string      :string_value,  :onlyif => proc{ STR_FIELDS.include?(part_type) }, :length => proc{ part_length - 4 }, :trim_padding => true
-      value_part  :vals,          :onlyif => proc { part_type == CollectdParser::VALUES }
+      value_part  :vals,          :onlyif => proc { part_type == BindataParser::VALUES }
       
       def get_value
         case
@@ -126,24 +126,17 @@ module RRDNotifier
       if packets.size >= 1
         
         packets.each_with_index do |packet, i|
-
-          if packet.values
-            # we have a value
-            p = DataPoint.new(last_packet)
-            p.merge_data_from(packet)
-          else
-            # we have a notification
-            p = Notification.new(last_packet)
-            p.merge_data_from(packet)
-          end
           
-          last_packet = p
+          p = RRDNotifier::Packet.new(last_packet)
+          p.merge_data_from(packet)
+          
+          last_packet = p if p.data?
           
           ret << p
         end
         
       end
-    
+      
       ret
     end
 

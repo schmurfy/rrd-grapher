@@ -1,13 +1,13 @@
-require File.expand_path('../../common', __FILE__)
-require File.expand_path('../../../lib/rrd-grapher/notifier/collectd_parser', __FILE__)
+require File.expand_path('../../../common', __FILE__)
+require File.expand_path('../../../../lib/rrd-grapher/notifier/parsers/bindata_parser', __FILE__)
 
 # as helper to build packets
-require File.expand_path('../../helpers/collectdrb', __FILE__)
+require File.expand_path('../../../helpers/collectdrb', __FILE__)
 
-describe 'Collectd Binary parser' do
+describe 'Collectd Bindata parser' do
   describe 'Simple packets' do
     before do
-      @parser = RRDNotifier::CollectdParser::Part.new
+      @parser = RRDNotifier::BindataParser::Part.new
     end
     
     it 'can parse numbers' do
@@ -45,24 +45,24 @@ describe 'Collectd Binary parser' do
       @pkt << Collectd.string(3, 'plugin_inst')
       @pkt << Collectd.string(4, 'type')
       @pkt << Collectd.string(5, 'type_inst')
-      @pkt << Collectd.string(256, 'a message')
       @pkt << Collectd.number(257, 2) # severity
+      @pkt << Collectd.string(256, 'a message')
     end
     
     should 'parse the notification' do
-      data = RRDNotifier::CollectdParser.parse(@pkt)
+      data = RRDNotifier::BindataParser.parse(@pkt)
       
       data.size.should == 1
       
-      data[0].class.should            == RRDNotifier::Notification
+      data[0].class.should            == RRDNotifier::Packet
       data[0].host.should             == 'hostname'
       data[0].time.should             == @now
       data[0].plugin.should           == 'plugin'
       data[0].plugin_instance.should  == 'plugin_inst'
       data[0].type.should             == 'type'
       data[0].type_instance.should    == 'type_inst'
-      data[0].message                 == 'a message'
-      data[0].severity                == 2
+      data[0].message.should          == 'a message'
+      data[0].severity.should         == 2
       
     end
   end
@@ -87,12 +87,12 @@ describe 'Collectd Binary parser' do
     should 'parse it' do
       data = nil
       # BinData::trace_reading do
-        data = RRDNotifier::CollectdParser.parse(@pkt)
+        data = RRDNotifier::BindataParser.parse(@pkt)
       # end
       
       data.size.should == 1
       
-      data[0].class.should            == RRDNotifier::DataPoint
+      data[0].class.should            == RRDNotifier::Packet
       data[0].host.should             == 'hostname'
       data[0].time.should             == @now
       data[0].interval.should         == @interval
@@ -138,12 +138,12 @@ describe 'Collectd Binary parser' do
      should 'parse it' do
        data = nil
        # BinData::trace_reading do
-         data = RRDNotifier::CollectdParser.parse(@pkt)
+         data = RRDNotifier::BindataParser.parse(@pkt)
        # end
        
        data.size.should == 3
        
-       data[0].class.should == RRDNotifier::DataPoint
+       data[0].class.should == RRDNotifier::Packet
        
        # data.packets.size.should == 8
        

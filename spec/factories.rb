@@ -10,12 +10,12 @@ FactoryGirl.define do
     type_instance "active"
   end
   
-  factory :data_point, :parent => :data_common, :class => "RRDNotifier::DataPoint" do
+  factory :data_point, :parent => :data_common, :class => "RRDNotifier::Packet" do
     values { [rand(200)] }
     interval 10
   end
   
-  factory :notification, :parent => :data_common, :class => "RRDNotifier::Notification" do
+  factory :notification, :parent => :data_common, :class => "RRDNotifier::Packet" do
     severity 1
     message "notification message"
   end

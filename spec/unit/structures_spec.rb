@@ -1,7 +1,7 @@
 require File.expand_path('../../common', __FILE__)
 require File.expand_path('../../../lib/rrd-grapher/notifier/structures', __FILE__)
 
-describe 'DataPoint' do
+describe 'Packet' do
   before do
     @point = Factory(:data_point)
   end
