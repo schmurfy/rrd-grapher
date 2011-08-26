@@ -1,5 +1,4 @@
 examples/
 Makefile
 *.txt
-*.js
 !*.min.js
