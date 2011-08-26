@@ -5,6 +5,7 @@ require File.expand_path('../structures', __FILE__)
 require File.expand_path('../alarms', __FILE__)
 require File.expand_path('../alarm_trigger', __FILE__)
 require File.expand_path('../default_user_handler', __FILE__)
+require File.expand_path('../collectdrb', __FILE__)
 
 module RRDNotifier
     
@@ -22,9 +23,17 @@ module RRDNotifier
     # @option opts [Module,Object] notification_manager The object
     #   used when a new notification is triggered/stopped
     # @option opts [FiberPool] fiber_pool Fiber pool to use.
+    # @option opts [String] :send_monitoring_to if present we can send
+    #   our own stats to this <host>:<port>
     # 
     def initialize(opts = {})
       @notification_handler = opts.delete(:notification_handler) || DefaultNotificationHandler
+      send_monitoring_to = opts.delete(:send_monitoring_to)
+      if send_monitoring_to
+        @send_monitoring_to_host, @send_monitoring_to_port = send_monitoring_to.split(':')
+        # to just data to collectd
+        @collectd_socket = EM::open_datagram_socket('127.0.0.1', nil)
+      end
       
       unless valid_notification_handler?(@notification_handler)
         raise "notification_handler #{@notification_handler} invalid, some callbacks are missing !"
@@ -71,6 +80,17 @@ module RRDNotifier
           @notification_handler.dispatch_notification(p)
         end
       end
+    end
+    
+    ##
+    # Send a counter to collectd.
+    # 
+    def send_gauge(host, interval, plugin, plugin_instance, type, type_instance, value)
+      data = Collectd.new(host, interval)
+      data.start()
+      data.gauge(plugin, plugin_instance, type, type_instance, value)
+      
+      @collectd_socket.send_datagram(data.to_s, @send_monitoring_to_host, @send_monitoring_to_port)
     end
     
     

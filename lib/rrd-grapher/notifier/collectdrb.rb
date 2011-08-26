@@ -1,3 +1,7 @@
+#
+# This file was not written by me but it did not come with a license
+# and I cannot find itw owner so if you know the author let me know.
+#
 class Collectd
   # Encode a string (type 0, null terminated string)
   def self.string(type, str)
@@ -13,9 +17,7 @@ class Collectd
   # Create a collectd collection object tied to a specific destination server and port.
   # The host parameter is the hostname sent to collectd, typically `hostname -f`.strip
   # The use of the interval is unclear, it's simply sent to collectd with every packet...
-  def initialize(server, port, host, interval)
-    @server_address = server
-    @server_port = port
+  def initialize(host, interval)
     @interval = interval
     @host = host || %x{hostname -s}.strip
     start
@@ -62,12 +64,13 @@ class Collectd
   # Arguments: pl=plugin, pi=plugin_instance, t=type, ti=type_instance, values: array of [type, value]
   # Eg.: values('disk', 'sda0', 'disk', 'ops', [[:counter, 1034], [:counter, 345]])
   @@type_code = {:gauge => 1, :counter => 0, :derive => 2, :absolute => 3}
-  def self.values(values)
-    pkt = ""
-    pkt << [6, 4+2+values.size*9, values.size].pack("nnn")
-    pkt << values.map{|t,v| [@@type_code[t]].pack("C")}.join
-    pkt << values.map{|t,v| t == :gauge ? [v].pack("E") : [v>>32, v & 0xffffffff].pack("NN")}.join
-    pkt
+  def values(pl, pi, t, ti, values)
+    chk
+    plugin(pl); plugin_instance(pi)
+    tipe(t); tipe_instance(ti)
+    @pkt << [6, 4+2+values.size*9, values.size].pack("nnn")
+    @pkt << values.map{|t,v| [@@type_code[t]].pack("C")}.join
+    @pkt << values.map{|t,v| t == :gauge ? [v].pack("E") : [v>>32, v & 0xffffffff].pack("NN")}.join
   end
 
   # Send a data point with one or multiple gauge values
@@ -81,4 +84,3 @@ class Collectd
 
   def to_s; @pkt; end
 end
-

@@ -137,10 +137,14 @@ module RRDNotifier
       return unless @monitor_drift
       now = Time.now
       
+      drift = (now - p.time).to_f.abs
+      # convert the time to ms before sending it
+      @manager.send_gauge(p.host, p.interval, 'monitoring', nil, 'gauge', 'clock_drift', drift * 1000)
+      
       # check the absolute value of the difference between
       # current server time and time included in the collectd
       # packet.
-      if (now - p.time).abs > @monitor_drift
+      if drift > @monitor_drift
         unless @manager.active_alarm?(p.measure_id, AlarmClockDrift, @monitor_drift)
           @manager.raise_alarm( p.measure_id, AlarmClockDrift.new(p, @monitor_drift) )
         end

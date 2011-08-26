@@ -35,6 +35,10 @@ module RRDNotifier
       port = opts.delete(:port) || 10000
       redirect_to = opts.delete(:redirect_to)
       
+      if redirect_to
+        # TODO: make it separate from redirect_to ?
+        opts.merge!(:send_monitoring_to => redirect_to)
+      end
       
       alarm_manager = AlarmManager.new(opts)
       

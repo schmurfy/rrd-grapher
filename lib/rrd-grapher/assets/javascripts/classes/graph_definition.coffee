@@ -177,3 +177,10 @@ class window.LoadGraph extends GraphDefinition
     @graph.addSerie("#{@host}/load/load",    "midterm", "Load (5min)")
     @graph.addSerie("#{@host}/load/load",    "longterm", "Load (15min)")
 
+
+class window.MonitoringDriftGraph extends GraphDefinition
+  constructor: (container, host, ymin = null) ->
+    super(host, container, "Clock drift", [ Format.delay, Format.delay ], ymin)
+    
+    @graph.addSerie("#{@host}/monitoring/gauge-clock_drift", "value", "Drift")
+    
