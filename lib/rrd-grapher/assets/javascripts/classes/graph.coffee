@@ -171,24 +171,29 @@ class window.Graph extends Backbone.Model
     count = 0
     
     $.each s.data, (i, pair) ->
-      ret += pair[1]
-      count++
+      # ignore null values
+      val = pair[1]
+      if val != null
+        ret += val
+        count++
     
     ret / count
   
   min: (s) ->
     ret = null
     $.each s.data, (i, pair) ->
-      if pair[1] && !isNaN(pair[1]) && (!ret || (pair[1] < ret))
-        ret = pair[1]
+      val = pair[1]
+      if (val != null) && !isNaN(val) && (!ret || (val < ret))
+        ret = val
     
     ret
   
   max: (s) ->
     ret = null
     $.each s.data, (i, pair) ->
-      if pair[1] && !isNaN(pair[1]) && (!ret || (pair[1] > ret))
-        ret = pair[1]
+      val = pair[1]
+      if (val != null) && !isNaN(val) && (!ret || (val > ret))
+        ret = val
     
     ret
   
