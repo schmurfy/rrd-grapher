@@ -8,9 +8,15 @@ module RRDNotifier
   
   class Server < EM::Connection
     
-    def initialize(alarm_manager, on_init_block = nil)
+    ##
+    # Called by eventmachine when the connection is created.
+    # 
+    # @param [String,nil] redirect_to Redirect to this host any packet received
+    # 
+    def initialize(alarm_manager, on_init_block = nil, redirect_to = nil)
       @alarm_manager = alarm_manager
       @on_init_block = on_init_block
+      @redirect_to = redirect_to ? redirect_to.split(':') : nil
     end
     
     ##
@@ -21,10 +27,14 @@ module RRDNotifier
     # @option opts [String] :host UDP address to bind on (default: 127.0.0.1)
     # @option opts [Integer] :port UDP port to bind on
     # @option opts [Object] :notification_handler This object 
+    # @option opts [String] :redirect_to Retransmit packets once received to
+    #   this <host>:<port>
     # 
     def self.start(opts = {}, &block)
       host = opts.delete(:host) || '127.0.0.1'
       port = opts.delete(:port) || 10000
+      redirect_to = opts.delete(:redirect_to)
+      
       
       alarm_manager = AlarmManager.new(opts)
       
@@ -32,7 +42,7 @@ module RRDNotifier
         raise "Unknown arguments: #{opts}"
     
       end
-      EM::open_datagram_socket(host, port, Server, alarm_manager, block)
+      EM::open_datagram_socket(host, port, Server, alarm_manager, block, redirect_to)
     end
     
     
@@ -62,6 +72,11 @@ module RRDNotifier
           @alarm_manager.packet_received(p)
         end
       end
+      
+      if @redirect_to
+        send_datagram(data, @redirect_to[0], @redirect_to[1])
+      end
+      
     end
   end
   
