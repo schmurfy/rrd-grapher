@@ -11,7 +11,7 @@ end
 # for the grapher
 guard 'coffeescript',
   :input => 'lib/rrd-grapher/assets/javascripts',
-  :output => 'lib/rrd-grapher/public/javascripts/generated'
+  :output => 'lib/rrd-grapher/public/javascripts'
 
 guard 'coffeescript',
   :input => 'spec/javascripts/source',
