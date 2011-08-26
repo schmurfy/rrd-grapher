@@ -2,7 +2,6 @@
 require 'eventmachine'
 
 require File.expand_path('../notifier/parsers/ruby_parser', __FILE__)
-require File.expand_path('../notifier/parsers/bindata_parser', __FILE__)
 require File.expand_path('../notifier/alarm_manager', __FILE__)
 
 module RRDNotifier

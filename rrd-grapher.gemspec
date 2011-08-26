@@ -27,8 +27,6 @@ Gem::Specification.new do |s|
   s.add_dependency("eventmachine",  "~> 0.12.10")
   s.add_dependency("fiber_pool",    "~> 1.0.0")
   
-  s.add_dependency("bindata",       "~> 1.4.2")
-  
   
   # s.add_development_dependency("jasmine",             "~> 1.0.2.1")
   s.add_development_dependency("jasmine",             "~> 1.1.0.rc3")

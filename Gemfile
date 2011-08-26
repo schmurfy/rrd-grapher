@@ -5,5 +5,6 @@ source :rubygems
 gem 'sprockets', :git => 'git://github.com/matehat/sprockets.git'
 # gem 'bacon', :git => 'git://github.com/schmurfy/bacon.git'
 gem 'bacon', :path => '/Users/schmurfy/Dev/personal/bacon'
+gem "bindata",       "~> 1.4.2"
 
 gemspec
