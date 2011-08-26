@@ -179,6 +179,29 @@ class window.LoadGraph extends GraphDefinition
     @graph.addSerie("#{@host}/load/load",    "midterm", "Load (5min)")
     @graph.addSerie("#{@host}/load/load",    "longterm", "Load (15min)")
 
+class window.CollectdNetworkStats extends GraphDefinition
+  constructor: (container, host, can_send = true, ymin = null) ->
+    super(host, container, "Network Stats (collectd)", [ Format.identity, Format.identity ], ymin)
+    
+    @graph.addSerie("#{@host}/network/queue_length", "value", "Queue length")
+    
+    @graph.addSerie("#{@host}/network/total_values-dispatch-accepted", "value", "Values dipatch accepted", 2)
+    @graph.addSerie("#{@host}/network/total_values-dispatch-rejected", "value", "Values dipatch rejected", 2)
+    
+    if can_send
+      @graph.addSerie("#{@host}/network/total_values-send-accepted", "value", "Values send accepted", 2)
+      @graph.addSerie("#{@host}/network/total_values-send-rejected", "value", "Values send rejected", 2)
+    
+
+class window.CollectdNetworkBandwidth extends GraphDefinition
+  constructor: (container, host, can_send = true, ymin = null) ->
+    super(host, container, "Network Usage (collectd)", [ Format.size, Format.identity ], ymin)
+
+    @graph.addSerie("#{@host}/network/if_octets", "rx", "Bytes Received")
+    @graph.addSerie("#{@host}/network/if_octets", "tx", "Bytes Sent") if can_send
+    
+    @graph.addSerie("#{@host}/network/if_packets", "rx", "Packets Received", 2)
+    @graph.addSerie("#{@host}/network/if_packets", "tx", "Packets Sent", 2) if can_send
 
 class window.MonitoringDriftGraph extends GraphDefinition
   constructor: (container, host, ymin = null) ->
