@@ -12,7 +12,7 @@ describe "Format", ->
     expect( @f.size(2097152) ).toEqual("2.00&nbsp;MB")
   
   it "can format time duration", ->
-    expect( @f.delay(100) ).toEqual("100&nbsp;ms")
+    expect( @f.delay(100) ).toEqual("100.00&nbsp;ms")
     expect( @f.delay(1000 * 2) ).toEqual("2.00&nbsp;s")
     expect( @f.delay(1000 * 60 * 2) ).toEqual("2.00&nbsp;m")
     expect( @f.delay(1000 * 60 * 60 * 2) ).toEqual("2.00&nbsp;h")

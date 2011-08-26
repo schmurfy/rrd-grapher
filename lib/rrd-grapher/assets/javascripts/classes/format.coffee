@@ -22,11 +22,14 @@ window.Format =
   _convert: (num, ref = null, units = [""]) ->
     index = 0
 
+    sign = if num < 0 then -1 else 1
+    abs_num = Math.abs(num)
+    
     if ref
-      while num > ref
-        num /= ref
+      while abs_num > ref
+        abs_num /= ref
         index+= 1
-
-    "" +  parseFloat(num).toFixed(2) + "&nbsp;" + units[index]
+    
+    "" +  parseFloat(abs_num * sign).toFixed(2) + "&nbsp;" + units[index]
 
 
