@@ -14,6 +14,8 @@ class window.GraphPage
     @linked_zoom_checkbox = $("#linkedzoom", @panel_container)
     @date_select          = $("#dateselect", @panel_container)
     
+    @interval = 15*60
+    
     # 60s
     @offset = 60 * 1000
   
@@ -38,11 +40,11 @@ class window.GraphPage
     # clear the date select
     @date_select.val("")
     
-    # getTime return a timestamp in UTC so ne
+    # getTime return a timestamp in UTC so no
     # conversion is required
     to = (new Date().getTime()) - @offset
     to = to / 1000
-    from = to - interval
+    from = to - @interval
     
     @set_interval(from, to)
   
