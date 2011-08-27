@@ -1,4 +1,6 @@
 
+![screenshot](http://dl.dropbox.com/u/1313066/github/rrd-grapher.png "Screenshot")
+
 # What is this ?
 
 RRDGrapher is my attempt at designing an application capable of drawing meaningful
