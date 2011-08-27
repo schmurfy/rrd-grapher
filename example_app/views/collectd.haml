@@ -18,8 +18,8 @@
   .column.grid_4
     %label{:for => "rangeselect"} Interval:
     %select#rangeselect
-      %option{:value => 30, :selected => true} 30 seconds
       %option{:value => 60} 1 minute
+      %option{:value => 15*60, :selected => true} 15 minues
       %option{:value => 60*60} 1 hour
       %option{:value => 60*60*24} 1 day
   

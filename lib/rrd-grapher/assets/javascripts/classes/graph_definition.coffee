@@ -158,7 +158,12 @@ class window.MemoryGraph extends GraphDefinition
   constructor: (container, host, os, ymin = null) ->
     super(host, container, "Memory", [ Format.size, Format.size ], ymin)
     
-    if os == "freebsd"
+    if os == "osx"
+      @graph.addSerie("#{@host}/memory/memory-active",    "value", "Active")
+      @graph.addSerie("#{@host}/memory/memory-free",      "value", "Free")
+      @graph.addSerie("#{@host}/memory/memory-inactive",  "value", "Inactive")
+      @graph.addSerie("#{@host}/memory/memory-wired",     "value", "Wired")
+    else if os == "freebsd"
       @graph.addSerie("#{@host}/memory/memory-active",    "value", "Active")
       @graph.addSerie("#{@host}/memory/memory-cache",     "value", "Cached")
       @graph.addSerie("#{@host}/memory/memory-free",      "value", "Free")

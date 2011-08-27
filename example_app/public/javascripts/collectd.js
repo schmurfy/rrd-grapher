@@ -25,8 +25,8 @@
     __extends(CollectdPage, GraphPage);
     function CollectdPage(container, panel_container, host) {
       CollectdPage.__super__.constructor.call(this, container, panel_container, host);
-      this.addGraph("NetworkGraph", "en0", 1 * Size.megabyte);
       this.addGraph("TestGraph", "en1", [20 * Size.kilobyte, 100 * Size.kilobyte]);
+      this.addGraph("MemoryGraph", "osx");
       this.addGraph("LoadGraph", 2.0);
     }
     return CollectdPage;
@@ -36,7 +36,7 @@
     graphs = [];
     container = $("#graphs");
     panel_container = $("#config_panel");
-    page = new CollectdPage(container, panel_container, "pomme.home");
+    page = new CollectdPage(container, panel_container, "pomme.local");
     $("#dateselect").datepicker().change(function() {
       var date_string, time;
       date_string = $(this).val();

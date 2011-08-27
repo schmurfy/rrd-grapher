@@ -12,9 +12,9 @@ class CollectdPage extends GraphPage
   constructor: (container, panel_container, host) ->
     super(container, panel_container, host)
     
-    @addGraph("NetworkGraph", "en0", 1 * Size.megabyte )
+    # @addGraph("NetworkGraph", "en0", 1 * Size.megabyte )
     @addGraph("TestGraph", "en1", [20 * Size.kilobyte, 100 * Size.kilobyte ] )
-    # @addGraph("MemoryGraph")
+    @addGraph("MemoryGraph", "osx")
     @addGraph("LoadGraph", 2.0)
 
 $ ->
@@ -23,7 +23,7 @@ $ ->
   container = $("#graphs")
   panel_container = $("#config_panel")
   
-  page = new CollectdPage(container, panel_container, "pomme.home")
+  page = new CollectdPage(container, panel_container, "pomme.local")
   # page.set_simple_interval(30)
   
   $("#dateselect").datepicker().change ->
