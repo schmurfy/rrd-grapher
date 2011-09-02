@@ -1,7 +1,7 @@
 
 class window.Graph extends Backbone.Model
-  colors = ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"]
   next_color = 0
+  colors = ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed", "#FF4571", "#FF8ED4", "#FF768C", "#1E74FF"]
   
   defaults:
     "formatters"  : [Format.identity, Format.identity]
