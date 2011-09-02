@@ -1,6 +1,5 @@
 
 class window.Graph extends Backbone.Model
-  next_color = 0
   colors = ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed", "#FF4571", "#FF8ED4", "#FF768C", "#1E74FF"]
   
   defaults:
@@ -11,6 +10,8 @@ class window.Graph extends Backbone.Model
     # super
     #   "formatters"  : formatters
     #   "limits"      : limits
+    
+    @next_color = 0
     
     @set "maxrows" : 400
     @set "legend_containers" : []
@@ -71,7 +72,7 @@ class window.Graph extends Backbone.Model
     formatter = formatter || @get("formatters")[yaxis - 1]
     
     s = new Serie(rrd_path, ds_name, legend, yaxis, formatter)
-    s.color = colors[next_color++]
+    s.color = colors[@next_color++]
     @get("series").push(s)
   
   addLine: (yvalue, color) ->
