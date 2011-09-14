@@ -36,7 +36,6 @@ class window.Graph extends Backbone.Model
     # @legend_containers[1] = $("<div>").addClass('legend').appendTo(this.master_container)
     
     @set "series"         : []
-    @set "lines"          : []
     @set "tooltip_point"  : null
   
     # compute end date (now - 20s)
@@ -75,9 +74,13 @@ class window.Graph extends Backbone.Model
     s.color = colors[@next_color++]
     @get("series").push(s)
   
-  addLine: (yvalue, color) ->
-    l = new StaticLine(yvalue, color)
-    @get("lines").push(l)
+  addLine: (yvalue, legend, yaxis, formatter) ->
+    yaxis = yaxis || 1
+    formatter = formatter || @get("formatters")[yaxis - 1]
+    
+    s = new StaticLine(yvalue, legend, yaxis, formatter)
+    s.color = colors[@next_color++]
+    @get("series").push(s)
   
   create: () ->
     this.update_graph(true)
@@ -94,19 +97,22 @@ class window.Graph extends Backbone.Model
     first = first || false
     urls = []
     
-    urls = $(@get("series")).select( (s) ->  s.enabled ).map (i, s) =>
+    urls = $(@get("series")).filter( (i,s) ->  s.enabled && !s.static ).map (i, s) =>
       [[@_build_query(s), s]]
     
     @multiple_get urls, (data_array) =>
+      $(@get("series")).filter( (i,s) ->  s.enabled && s.static ).each (i,s) =>
+        data_array.push( s.get_definition(@get("from"), @get("to")) )
+        
       @_update_graph_common(first, data_array)
     
   
-  update_graph_from_cache: () ->
+  update_graph_from_cache: ->
     data_array = []
     
-    $.each @get("series"), (i, s) ->
+    $.each @get("series"), (i, s) =>
       if s.enabled
-        data_array.push( s.get_definition() )
+        data_array.push( s.get_definition(@get("from"), @get("to")) )
     
     @_update_graph_common(false, data_array)
   
@@ -115,15 +121,11 @@ class window.Graph extends Backbone.Model
     @set "to"   : to
   
   _update_graph_common: (first, data_array) ->
-    
-    # add static data
-    $.each @get("lines"), (i, line) ->
-      data_array.push( line.get_definition(@get("from"), @get("to")) )
-    
+        
     if first
       @set "plot" : $.plot(@get("container"), data_array, @get("flot_options"))
       container = @get("container")
-      container.bind("plothover", (event, pos, item) => @show_tooltip(event, pos, item))
+      container.bind("plothover", (event, pos, item) => this.show_tooltip(event, pos, item))
       container.bind "plotselected", (event, ranges) =>
         from = Time.client_to_server(ranges.xaxis.from)
         to = Time.client_to_server(ranges.xaxis.to)
@@ -161,11 +163,20 @@ class window.Graph extends Backbone.Model
       url = el[0]
       serie = el[1]
       
-      $.getJSON url, (data) ->
-        serie.set_data(data)
-        ret.push( serie.get_definition() )
-        left -= 1
-        when_done_cb(ret) if left == 0
+      $.ajax
+        url: url
+        dataType: 'json'
+        complete: ->
+          left -= 1
+          when_done_cb(ret) if left == 0
+          
+        success: (data) ->
+          serie.set_data(data)
+          ret.push( serie.get_definition() )
+          
+        error: (xhr, errText, err) ->
+          if (xhr.status == 404) && console
+            console.log("URL No found: #{url}")
   
   avg: (s) ->
     ret = 0

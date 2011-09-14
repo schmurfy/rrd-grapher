@@ -87,7 +87,7 @@ class window.GraphDefinition
       
         
     else
-      limits = null
+      limits = $.map formatters, -> [[0, 0]]
     
     @graph = new Graph
       "title"             : @title
