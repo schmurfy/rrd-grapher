@@ -22,18 +22,17 @@ class window.Graph extends Backbone.Model
     @set("limits" : @defaults["limits"]) if @get("limits") == null
     
     # create graph container
-    master_container = $("<div>").addClass("graph_container").appendTo(parent_container)
-    @set "master_container" : master_container
+    @master_container = $("<div>").addClass("graph_container").appendTo(parent_container)
     
-    # @set "graph_title"      : $("<div>").addClass("graph_title").appendTo(master_container)
+    # @set "graph_title"      : $("<div>").addClass("graph_title").appendTo(@master_container)
     # @get("graph_title").text(title)
     
-    @get("legend_containers")[0] = $("<div>").addClass('legend').appendTo(master_container)
+    @get("legend_containers")[0] = $("<div>").addClass('legend').appendTo(@master_container)
     $("<h3>").text(title).appendTo(@get("legend_containers")[0])
     $("<div>").appendTo(@get("legend_containers")[0])
     
-    @set "container" : $("<div>").addClass("graph").appendTo(master_container)
-    # @legend_containers[1] = $("<div>").addClass('legend').appendTo(this.master_container)
+    @set "container" : $("<div>").addClass("graph").appendTo(@master_container)
+    # @legend_containers[1] = $("<div>").addClass('legend').appendTo(@master_container)
     
     @set "series"         : []
     @set "tooltip_point"  : null
@@ -94,17 +93,18 @@ class window.Graph extends Backbone.Model
     query
   
   update_graph: (first) ->
-    first = first || false
-    urls = []
+    if @master_container
+      first = first || false
+      urls = []
     
-    urls = $(@get("series")).filter( (i,s) ->  s.enabled && !s.static ).map (i, s) =>
-      [[@_build_query(s), s]]
+      urls = $(@get("series")).filter( (i,s) ->  s.enabled && !s.static ).map (i, s) =>
+        [[@_build_query(s), s]]
     
-    @multiple_get urls, (data_array) =>
-      $(@get("series")).filter( (i,s) ->  s.enabled && s.static ).each (i,s) =>
-        data_array.push( s.get_definition(@get("from"), @get("to")) )
+      @multiple_get urls, (data_array) =>
+        $(@get("series")).filter( (i,s) ->  s.enabled && s.static ).each (i,s) =>
+          data_array.push( s.get_definition(@get("from"), @get("to")) )
         
-      @_update_graph_common(first, data_array)
+        @_update_graph_common(first, data_array)
     
   
   update_graph_from_cache: ->
@@ -159,7 +159,7 @@ class window.Graph extends Backbone.Model
     left = urls.length
     ret = []
     
-    $(urls).each (i, el) ->
+    $(urls).each (i, el) =>
       url = el[0]
       serie = el[1]
       
@@ -174,9 +174,10 @@ class window.Graph extends Backbone.Model
           serie.set_data(data)
           ret.push( serie.get_definition() )
           
-        error: (xhr, errText, err) ->
-          if (xhr.status == 404) && console
-            console.log("URL No found: #{url}")
+        error: (xhr, errText, err) =>
+          if (xhr.status == 404) && @master_container
+            @master_container.remove()
+            @master_container = null
   
   avg: (s) ->
     ret = 0
