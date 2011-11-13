@@ -210,6 +210,11 @@ class window.Graph extends Backbone.Model
     
     ret
   
+  lpad = (str, length, padString = " ") ->
+    str = String(str)
+    len = length - str.length
+    str = Array(len).join(padString) + str
+  
   show_tooltip: (event, pos, item) ->
     if item
       id = "" + item.seriesIndex + ":" + item.dataIndex
@@ -222,8 +227,8 @@ class window.Graph extends Backbone.Model
           s = s[0]
           $("#tooltip").remove()
           y = item.datapoint[1]
-          item_date = new Date(item.datapoint[0])
-          date_str = item_date.getHours() + ":" + item_date.getMinutes()
+          item_date = new Date( item.datapoint[0] - (Time.tz_offset * 1000) )
+          date_str = lpad(item_date.getHours(), 2, '0') + ":" + lpad(item_date.getMinutes(), 2, '0')
         
           content = s.format(y) + '<br/>' + date_str + "<br/>" + s.legend;
         
