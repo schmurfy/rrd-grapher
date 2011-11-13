@@ -141,6 +141,7 @@ describe 'AlarmManager' do
   
   describe 'a trigger on clock drift' do
     before do
+      @manager.stubs(:send_gauge)
       @manager.register_alarm('*', "memory/*", "memory/active",
           :monitor_drift => 30 # allow 30s of drift
         )

@@ -5,7 +5,7 @@ require File.expand_path('../../../lib/rrd-grapher/notifier', __FILE__)
 
 describe 'Notifier::Server' do
   should 'bind an udp socket on start' do
-    EM::expects(:open_datagram_socket).with('local', 7777, RRDNotifier::Server, kind_of(RRDNotifier::AlarmManager), nil)
+    EM::expects(:open_datagram_socket).with('local', 7777, RRDNotifier::Server, kind_of(RRDNotifier::AlarmManager), nil, nil)
     RRDNotifier::Server.start(:host => 'local', :port => 7777)
   end
   
