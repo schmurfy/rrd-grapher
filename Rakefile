@@ -1,4 +1,4 @@
-
+require "bundler/gem_tasks"
 require 'sprockets'
 
 def pack_js(src_file)
