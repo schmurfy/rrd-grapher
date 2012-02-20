@@ -114,8 +114,8 @@ module RRDNotifier
     # @param [Alarm] alarm An alarm object
     # 
     def raise_alarm(measure_id, alarm)
-      @notification_handler.alarm_started(alarm)
       (@active_alarms[measure_id] ||= []) << alarm
+      @notification_handler.alarm_started(alarm)
     end
     
     ##
