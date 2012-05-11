@@ -1,4 +1,3 @@
-
 ![screenshot](http://dl.dropbox.com/u/1313066/github/rrd-grapher.png "Screenshot")
 
 # What is this ?
@@ -9,7 +8,7 @@ dynamic graphs from RRD files.
 This project is built as a Rack middleware providing you the with the tools you need to
 build you own views as you see fit, the middleware will provide:
 
-- a REST inerface to your rrd files
+- a REST interface to your rrd files
 - a javascript framework to create graphs easily (built on top of jQuery and Flot)
 - some basic css to get you started (everything can then be overloaded in your application)
 
