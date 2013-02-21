@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency("rrd-ffi",       "~> 0.2.7")
   s.add_dependency("rest-client",   "~> 1.6.3")
   s.add_dependency("i18n",          "~> 0.6.0")
-  s.add_dependency("eventmachine",  "~> 0.12.10")
+  s.add_dependency("eventmachine",  ">= 0.12.10")
   s.add_dependency("fiber_pool",    "~> 1.0.0")
   
   
