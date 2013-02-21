@@ -1,5 +1,5 @@
 
-source :rubygems
+source 'https://rubygems.org'
 
 # underscore.js makes sprockets raise an error wil latest 1.x version..
 #gem 'sprockets', :git => 'git://github.com/matehat/sprockets.git'
